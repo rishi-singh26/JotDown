@@ -7,9 +7,23 @@
 
 import SwiftUI
 
+enum StatusMessage: String {
+    case readyToWrite = "Ready to write..."
+    case typing = "Typing..."
+    case nothingToCopy = "Nothing to copy"
+    case copiedToClipboard = "Copied to clipboard!"
+    case cleared = "Cleared"
+    case nothingToSave = "Nothing to save"
+    case requestingPermission = "Requesting permission..."
+    case saving = "Saving..."
+    case savedToNotes = "Saved to Notes!"
+    case saveFailed = "Save failed - Try manual setup"
+    case permissionDenied = "Permission denied - Open System Settings"
+}
+
 struct QuickPadView: View {
     @State private var noteText: String = ""
-    @State private var statusMessage: String = "Ready to write..."
+    @State private var statusMessage: StatusMessage = .readyToWrite
     @State private var messageColor: Color = .secondary
     @State private var isLoading: Bool = false
     @FocusState private var isTextFieldFocused: Bool
@@ -72,7 +86,7 @@ struct QuickPadView: View {
             // Status and Actions
             VStack(spacing: 12) {
                 HStack {
-                    Text(statusMessage)
+                    Text(statusMessage.rawValue)
                         .font(.caption)
                         .foregroundColor(messageColor)
                     
@@ -107,8 +121,7 @@ struct QuickPadView: View {
                         Group {
                             if isLoading {
                                 ProgressView()
-                                    .scaleEffect(0.7)
-                                    .progressViewStyle(CircularProgressViewStyle())
+                                    .controlSize(.small)
                             }
                         }
                     )
@@ -117,7 +130,7 @@ struct QuickPadView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 16)
         }
-        .frame(width: CGFloat(UserDefaultsManager.width), height: CGFloat(UserDefaultsManager.width))
+        .frame(width: CGFloat(UserDefaultsManager.width), height: CGFloat(UserDefaultsManager.height))
 //        .background(Color(NSColor.windowBackgroundColor))
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -136,10 +149,10 @@ struct QuickPadView: View {
     private func updateWordCount() {
         let count = wordCount
         if count == 0 {
-            statusMessage = "Ready to write..."
+            statusMessage = .readyToWrite
             messageColor = .secondary
         } else {
-            statusMessage = "Typing..."
+            statusMessage = .typing
             messageColor = .blue
         }
     }
@@ -148,7 +161,7 @@ struct QuickPadView: View {
         let content = noteText.trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard !content.isEmpty else {
-            statusMessage = "Nothing to copy"
+            statusMessage = .nothingToCopy
             messageColor = .orange
             return
         }
@@ -157,23 +170,11 @@ struct QuickPadView: View {
         pasteboard.clearContents()
         pasteboard.setString(content, forType: .string)
         
-        statusMessage = "Copied to clipboard!"
+        statusMessage = .copiedToClipboard
         messageColor = .green
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            statusMessage = "Ready to write..."
-            messageColor = .secondary
-        }
-    }
-    
-    private func clearText() {
-        noteText = ""
-        statusMessage = "Cleared"
-        messageColor = .orange
-        saveDraft()
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            statusMessage = "Ready to write..."
+            statusMessage = .readyToWrite
             messageColor = .secondary
         }
     }
@@ -182,91 +183,28 @@ struct QuickPadView: View {
         let content = noteText.trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard !content.isEmpty else {
-            statusMessage = "Nothing to save"
+            statusMessage = .nothingToSave
             messageColor = .orange
             return
         }
         
         isLoading = true
-        statusMessage = "Requesting permission..."
+        statusMessage = .requestingPermission
         messageColor = .blue
         
         // First, request permission by running a simple AppleScript
-        requestNotesPermission { [self] success in
+        AppleScriptManager.requestNotesPermission { [self] success in
 //            guard let self = self else { return }
             
             DispatchQueue.main.async {
                 if success {
-                    self.statusMessage = "Saving..."
-                    self.performSaveToNotes(content: content)
-                } else {
-                    self.isLoading = false
-                    self.statusMessage = "Permission denied - Open System Settings"
-                    self.messageColor = .red
+                    self.statusMessage = .saving
+                    let (status, error) = AppleScriptManager.saveOrUpdateNote(title: "", content: content)
                     
-                    // Show instructions for manual permission setup
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                        self.showPermissionInstructions()
-                    }
-                }
-            }
-        }
-    }
-    
-    private func requestNotesPermission(completion: @escaping (Bool) -> Void) {
-        DispatchQueue.global(qos: .userInitiated).async {
-            // Simple permission request script
-            let permissionScript = """
-            tell application "Notes"
-                try
-                    get name of first note
-                    return "permission_granted"
-                on error
-                    return "permission_denied"
-                end try
-            end tell
-            """
-            
-            var error: NSDictionary?
-            if let script = NSAppleScript(source: permissionScript) {
-                let result = script.executeAndReturnError(&error)
-                let success = (error == nil)
-                completion(success)
-            } else {
-                completion(false)
-            }
-        }
-    }
-    
-    private func performSaveToNotes(content: String) {
-        let noteTitle = createNoteTitle(from: content)
-        
-        let appleScript = """
-        tell application "Notes"
-            activate
-            try
-                tell account "iCloud"
-                    tell folder "Notes"
-                        set newNote to make new note with properties {name:"\(escapeAppleScriptString(noteTitle))", body:"\(escapeAppleScriptString(content))"}
-                    end tell
-                end tell
-            on error
-                set newNote to make new note with properties {body:"\(escapeAppleScriptString(content))"}
-            end try
-        end tell
-        """
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            var error: NSDictionary?
-            
-            if let script = NSAppleScript(source: appleScript) {
-                let result = script.executeAndReturnError(&error)
-                
-                DispatchQueue.main.async {
                     self.isLoading = false
                     
-                    if error == nil {
-                        self.statusMessage = "Saved to Notes!"
+                    if status == true {
+                        self.statusMessage = .savedToNotes
                         self.messageColor = .green
                         
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -274,18 +212,24 @@ struct QuickPadView: View {
                             self.saveDraft()
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                                self.statusMessage = "Ready to write..."
+                                self.statusMessage = .readyToWrite
                                 self.messageColor = .secondary
                             }
                         }
+                        
                     } else {
-                        self.statusMessage = "Save failed - Try manual setup"
+                        self.statusMessage = .saveFailed
                         self.messageColor = .red
                         print("AppleScript Error: \(error!)")
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                            self.showPermissionInstructions()
-                        }
+                    }
+                } else {
+                    self.isLoading = false
+                    self.statusMessage = .permissionDenied
+                    self.messageColor = .red
+                    
+                    // Show instructions for manual permission setup
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        self.showPermissionInstructions()
                     }
                 }
             }
@@ -318,35 +262,20 @@ struct QuickPadView: View {
             }
         }
         
-        statusMessage = "Ready to write..."
+        statusMessage = .readyToWrite
         messageColor = .secondary
     }
     
-    private func createNoteTitle(from content: String) -> String {
-        let lines = content.components(separatedBy: .newlines)
-        let firstLine = lines.first?.trimmingCharacters(in: .whitespaces) ?? ""
+    private func clearText() {
+        noteText = ""
+        statusMessage = .cleared
+        messageColor = .orange
+        saveDraft()
         
-        if firstLine.isEmpty {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .short
-            formatter.timeStyle = .short
-            return "Quick Note - \(formatter.string(from: Date()))"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            statusMessage = .readyToWrite
+            messageColor = .secondary
         }
-        
-        let maxLength = 50
-        if firstLine.count > maxLength {
-            return String(firstLine.prefix(maxLength - 3)) + "..."
-        }
-        
-        return firstLine
-    }
-    
-    private func escapeAppleScriptString(_ string: String) -> String {
-        return string
-            .replacingOccurrences(of: "\\", with: "\\\\")
-            .replacingOccurrences(of: "\"", with: "\\\"")
-            .replacingOccurrences(of: "\r", with: "\\r")
-            .replacingOccurrences(of: "\n", with: "\\n")
     }
     
     private func saveDraft() {
@@ -354,6 +283,7 @@ struct QuickPadView: View {
     }
     
     private func loadDraft() {
+        // Show the note text stored in user defaults when user opens menu bar popup
         if let draft = UserDefaultsManager.loadDraft() {
             noteText = draft
         }
