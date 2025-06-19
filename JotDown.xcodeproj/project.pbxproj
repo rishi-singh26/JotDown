@@ -29,9 +29,22 @@
 		5B0E96822E046AB300BA7CCC /* JotDownUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JotDownUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		5B0E96A62E046B9C00BA7CCC /* Exceptions for "JotDown" folder in "JotDown" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 5B0E96662E046AB000BA7CCC /* JotDown */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		5B0E96692E046AB000BA7CCC /* JotDown */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				5B0E96A62E046B9C00BA7CCC /* Exceptions for "JotDown" folder in "JotDown" target */,
+			);
 			path = JotDown;
 			sourceTree = "<group>";
 		};
@@ -401,6 +414,10 @@
 				DEVELOPMENT_TEAM = HG5RR9BKZR;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = JotDown/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = JotDown;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -408,6 +425,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = in.rishisingh.JotDown;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -429,6 +447,10 @@
 				DEVELOPMENT_TEAM = HG5RR9BKZR;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = JotDown/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = JotDown;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -436,6 +458,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = in.rishisingh.JotDown;
 				PRODUCT_NAME = "$(TARGET_NAME)";
