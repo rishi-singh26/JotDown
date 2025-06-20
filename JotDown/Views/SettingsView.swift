@@ -8,19 +8,25 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @AppStorage("exampleSetting") var exampleSetting: Bool = false
+    @AppStorage("launchAtLogin") private var launchAtLogin = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Settings")
-                .font(.largeTitle)
-                .bold()
-
-            Toggle("Example Setting", isOn: $exampleSetting)
-
-            Spacer()
+        ScrollView {
+            MacCustomSection {
+                HStack(alignment: .center) {
+                    Text("Launch at Login")
+                        .frame(width: 150, alignment: .leading)
+                    Spacer()
+                    Toggle("", isOn: $launchAtLogin)
+                        .onChange(of: launchAtLogin) { _, newValue in
+                            LaunchAtLoginManager.shared.setLaunchAtLogin(enabled: newValue)
+                        }
+                        .toggleStyle(.switch)
+                        .help("Launch at Login")
+                }
+            }
+            .padding(.top)
         }
-        .padding()
         .frame(width: 400, height: 300)
     }
 }

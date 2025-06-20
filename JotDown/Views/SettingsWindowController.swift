@@ -40,6 +40,8 @@ class SettingsTabViewController: NSTabViewController {
     
     private func addSettingsTab() {
         let settingsVC = NSHostingController(rootView: SettingsView())
+        settingsVC.title = "Settings"
+        
         let settingsTab = NSTabViewItem(viewController: settingsVC)
         settingsTab.label = "Settings"
         settingsTab.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Settings")
@@ -48,6 +50,7 @@ class SettingsTabViewController: NSTabViewController {
     
     private func addAboutTab() {
         let aboutVC = NSHostingController(rootView: AboutView())
+        aboutVC.title = "About"
         let aboutTab = NSTabViewItem(viewController: aboutVC)
         aboutTab.label = "About"
         aboutTab.image = NSImage(systemSymbolName: "info.circle", accessibilityDescription: "About")
