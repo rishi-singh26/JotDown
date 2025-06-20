@@ -120,14 +120,42 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if settingsWindowController == nil {
             settingsWindowController = SettingsWindowController()
+            
+            // Set up window close notification
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(settingsWindowWillClose(_:)),
+                name: NSWindow.willCloseNotification,
+                object: settingsWindowController?.window
+            )
         }
 
+        // Show app in dock when settings window opens
+        showInDock()
+        
         settingsWindowController?.showWindow(nil)
         settingsWindowController?.window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
         
         // explicitly order window to front regardless of state:
         settingsWindowController?.window?.orderFrontRegardless()
+    }
+    
+    @objc func settingsWindowWillClose(_ notification: Notification) {
+        print("🛑 Settings Window will close - hiding from dock...")
+        
+        // Remove observer
+        NotificationCenter.default.removeObserver(
+            self,
+            name: NSWindow.willCloseNotification,
+            object: settingsWindowController?.window
+        )
+        
+        // Hide app from dock when settings window closes
+        hideFromDock()
+        
+        // Clean up the window controller
+        settingsWindowController = nil
     }
     
     @objc func quitApp() {
@@ -137,8 +165,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @objc func closeSettingsWindow() {
         print("🛑 Closing Settings Window...")
-
         settingsWindowController?.window?.performClose(nil)
+    }
+    
+    // MARK: - Dock Visibility Management
+    private func showInDock() {
+        print("🔍 Showing app in dock...")
+        NSApp.setActivationPolicy(.regular)
+    }
+    
+    private func hideFromDock() {
+        print("👻 Hiding app from dock...")
+        NSApp.setActivationPolicy(.accessory)
     }
     
     private func setupKeyboardShortcuts() {
