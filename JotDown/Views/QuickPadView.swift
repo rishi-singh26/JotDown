@@ -29,6 +29,8 @@ struct QuickPadView: View {
     @FocusState private var isTextFieldFocused: Bool
     
     let onClose: () -> Void
+    let onQuit: () -> Void
+    let openSettings: () -> Void
     
     var body: some View {
         VStack(spacing: 0) {
@@ -98,14 +100,14 @@ struct QuickPadView: View {
                 }
                 
                 HStack(spacing: 12) {
-                    Button("Quit") {
-                        print("Quit")
+                    Button("Quit  ⌘ Q") {
+                        onQuit()
                     }
                     .buttonStyle(.bordered)
                     .disabled(noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     
-                    Button("Settings") {
-                        print("Settings")
+                    Button("Settings  ⌘ ,") {
+                        openSettings()
                     }
                     .buttonStyle(.bordered)
                     .disabled(noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)

@@ -5,9 +5,6 @@
 //  Created by Rishi Singh on 19/06/25.
 //
 
-// This should be your ONLY Swift file with @main
-// Delete any other App.swift or ContentView.swift files
-
 import Cocoa
 import SwiftUI
 
@@ -24,6 +21,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Hide dock icon (this is crucial for menu bar apps)
         NSApp.setActivationPolicy(.accessory)
         
+        // Close any default windows that might have been created
+        for window in NSApp.windows {
+            window.close()
+        }
+        
         // Setup keyboard shortcut
         setupKeyboardShortcuts()
         
@@ -32,6 +34,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.setupStatusItem()
             self.setupPopover()
         }
+        
+        LaunchAtLoginManager.shared.initialSetup()
+    }
+    
+    func applicationShouldOpenUntitledFile(_ sender: NSApplication) -> Bool {
+        return false
+    }
+    
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        return false
     }
     
     private func setupStatusItem() {
@@ -68,9 +80,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         popover.behavior = .transient
         popover.animates = true
         
-        let quickPadView = QuickPadView { [weak self] in
-            self?.popover.performClose(nil)
-        }
+        let quickPadView = QuickPadView(
+            onClose: { [weak self] in
+                self?.popover.performClose(nil)
+            },
+            onQuit: { [weak self] in
+                self?.quitApp()
+            },
+            openSettings: { [weak self] in
+                self?.openSettingsWindow()
+            }
+        )
         
         popover.contentViewController = NSHostingController(rootView: quickPadView)
         print("✅ Popover configured")
@@ -105,11 +125,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         settingsWindowController?.showWindow(nil)
         settingsWindowController?.window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+        
+        // explicitly order window to front regardless of state:
+        settingsWindowController?.window?.orderFrontRegardless()
     }
     
     @objc func quitApp() {
         print("👋 Quit app triggered")
         NSApp.terminate(nil)
+    }
+    
+    @objc func closeSettingsWindow() {
+        print("🛑 Closing Settings Window...")
+
+        settingsWindowController?.window?.performClose(nil)
     }
     
     private func setupKeyboardShortcuts() {
@@ -137,6 +166,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         appMenu.addItem(quitItem)
         
         print("⌨️ Command + , and Command + Q shortcuts registered")
+        
+        // Add Close Settings Window item (Command + W)
+        let closeWindowItem = NSMenuItem(title: "Close Window", action: #selector(closeSettingsWindow), keyEquivalent: "w")
+        closeWindowItem.target = self
+        appMenu.addItem(closeWindowItem)
+
+        print("⌨️ Command + W shortcut registered")
     }
 }
 

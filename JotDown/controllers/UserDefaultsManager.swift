@@ -15,7 +15,6 @@ class UserDefaultsManager {
     
     private enum Keys {
         static let quickPadDraft = "QuickPadDraft"
-        static let quickPadId = "QuickPadCurrentNoteId"
     }
     
     private init() {}
@@ -32,19 +31,5 @@ class UserDefaultsManager {
     
     static func clearDraft() {
         defaults.removeObject(forKey: Keys.quickPadDraft)
-    }
-    
-    // MARK: - Current Note Title
-    
-    static func saveCurrentNoteId(_ title: String) {
-        defaults.set(title, forKey: Keys.quickPadId)
-    }
-    
-    static func loadCurrentNoteId() -> String? {
-        return defaults.string(forKey: Keys.quickPadId)
-    }
-    
-    static func clearCurrentNoteId() {
-        defaults.removeObject(forKey: Keys.quickPadId)
     }
 }
