@@ -32,7 +32,7 @@ class LaunchAtLoginManager {
     func initialSetup() {
         // At app launch, check if the app is set to launch at login and reflect the same in the settings
         let isEnabled = isLaunchAtLoginEnabled()
-        UserDefaults.standard.set(isEnabled, forKey: "launchAtLogin")
+        UserDefaultsManager.setLaunchAtLogin(value: isEnabled)
         LaunchAtLoginManager.shared.setLaunchAtLogin(enabled: isEnabled)
 
     }

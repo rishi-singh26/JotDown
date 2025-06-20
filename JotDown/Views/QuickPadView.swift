@@ -32,6 +32,17 @@ struct QuickPadView: View {
     let onQuit: () -> Void
     let openSettings: () -> Void
     
+    var textFont: Font {
+        let fontSize = UserDefaultsManager.getFontSize()
+        let useMonospaced = UserDefaultsManager.getMonoSpaced()
+        
+        if useMonospaced {
+            return .system(size: fontSize, design: .monospaced)
+        }
+        
+        return .system(size: fontSize)
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             // Header
@@ -63,7 +74,7 @@ struct QuickPadView: View {
                 ScrollView {
                     TextEditor(text: $noteText)
                         .focused($isTextFieldFocused)
-                        .font(.body)
+                        .font(textFont)
                         .scrollContentBackground(.hidden)
                         .frame(minHeight: 180)
                         .onAppear {

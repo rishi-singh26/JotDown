@@ -8,7 +8,12 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @AppStorage("launchAtLogin") private var launchAtLogin = false
+    @AppStorage(UserDefaultsManager.Keys.launchAtLogin) private var launchAtLogin = false
+    @AppStorage(UserDefaultsManager.Keys.monospaced) private var monospaced = false
+    @AppStorage(UserDefaultsManager.Keys.fontSize) private var fontSize: Double = 15.0
+    
+    let minFontSize = 10
+    let maxFontSize = 30
 
     var body: some View {
         ScrollView {
@@ -26,8 +31,43 @@ struct SettingsView: View {
                 }
             }
             .padding(.top)
+            
+            MacCustomSection {
+                HStack(alignment: .center) {
+                    Text("Text Size")
+                        .frame(width: 100, alignment: .leading)
+                    Spacer()
+                    
+                    Stepper(value: $fontSize, in: Double(minFontSize)...Double(maxFontSize), step: 1) {
+                        HStack {
+                            HStack(spacing: 0) {
+                                Text("A")
+                                    .font(.custom("small", size: 11))
+                                Slider(value: $fontSize, in: Double(minFontSize)...Double(maxFontSize), step: 1)
+                                    .frame(width: 200, alignment: .trailing)
+                                Text("A")
+                                    .font(.custom("medium", size: 15))
+                                    .padding(.leading, 6)
+                            }
+                            Text(String(format: "%.0f", fontSize))
+                                .frame(width: 30, alignment: .trailing)
+                        }
+                    }
+                }
+                
+                Divider()
+                
+                HStack(alignment: .center) {
+                    Text("Monospaced")
+                        .frame(width: 150, alignment: .leading)
+                    Spacer()
+                    Toggle("", isOn: $monospaced)
+                        .toggleStyle(.switch)
+                        .help("Monospaced font style")
+                }
+            }
+            .padding(.bottom)
         }
-        .frame(width: 400, height: 300)
     }
 }
 

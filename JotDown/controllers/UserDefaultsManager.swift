@@ -13,8 +13,11 @@ class UserDefaultsManager {
     
     static private let defaults = UserDefaults.standard
     
-    private enum Keys {
+    enum Keys {
         static let quickPadDraft = "QuickPadDraft"
+        static let launchAtLogin = "launchAtLogin"
+        static let monospaced = "monospaced"
+        static let fontSize = "fontSize"
     }
     
     private init() {}
@@ -31,5 +34,22 @@ class UserDefaultsManager {
     
     static func clearDraft() {
         defaults.removeObject(forKey: Keys.quickPadDraft)
+    }
+    
+    // MARK: - <#Section Heading#>
+    static func getLaunchAtLogin() -> Bool {
+        defaults.bool(forKey: Keys.launchAtLogin)
+    }
+    
+    static func setLaunchAtLogin(value: Bool) {
+        defaults.set(value, forKey: Keys.launchAtLogin)
+    }
+    
+    static func getMonoSpaced() -> Bool {
+        defaults.bool(forKey: Keys.monospaced)
+    }
+    
+    static func getFontSize() -> Double {
+        defaults.double(forKey: Keys.fontSize)
     }
 }
