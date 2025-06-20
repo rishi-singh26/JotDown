@@ -16,11 +16,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem!
     var popover: NSPopover!
     
+    var settingsWindowController: SettingsWindowController?
+    
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("🚀 App did finish launching - AppDelegate working!")
         
         // Hide dock icon (this is crucial for menu bar apps)
         NSApp.setActivationPolicy(.accessory)
+        
+        // Setup keyboard shortcut
+        setupKeyboardShortcuts()
         
         // Delay status item creation slightly to ensure menu bar is ready
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -87,6 +92,51 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
             NSApp.activate(ignoringOtherApps: true)
         }
+    }
+    
+    // MARK: - Settings Window
+    @objc func openSettingsWindow() {
+        print("⚙️ Opening Settings Window...")
+
+        if settingsWindowController == nil {
+            settingsWindowController = SettingsWindowController()
+        }
+
+        settingsWindowController?.showWindow(nil)
+        settingsWindowController?.window?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+    
+    @objc func quitApp() {
+        print("👋 Quit app triggered")
+        NSApp.terminate(nil)
+    }
+    
+    private func setupKeyboardShortcuts() {
+        // Create the main menu
+        let mainMenu = NSMenu()
+        let appMenuItem = NSMenuItem()
+        mainMenu.addItem(appMenuItem)
+        NSApp.mainMenu = mainMenu
+        
+        // Create the App menu (the one named after your app)
+        let appMenu = NSMenu()
+        appMenuItem.submenu = appMenu
+        
+        // Add Settings item (Command + ,)
+        let settingsItem = NSMenuItem(title: "Settings...", action: #selector(openSettingsWindow), keyEquivalent: ",")
+        settingsItem.target = self
+        appMenu.addItem(settingsItem)
+        
+        appMenu.addItem(NSMenuItem.separator())
+        
+        // Add Quit item (Command + Q)
+        let quitTitle = "Quit JotDown"
+        let quitItem = NSMenuItem(title: quitTitle, action: #selector(quitApp), keyEquivalent: "q")
+        quitItem.target = self
+        appMenu.addItem(quitItem)
+        
+        print("⌨️ Command + , and Command + Q shortcuts registered")
     }
 }
 

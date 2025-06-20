@@ -98,6 +98,18 @@ struct QuickPadView: View {
                 }
                 
                 HStack(spacing: 12) {
+                    Button("Quit") {
+                        print("Quit")
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    
+                    Button("Settings") {
+                        print("Settings")
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    Spacer()
                     Button("Clear") {
                         clearText()
                     }
@@ -109,8 +121,6 @@ struct QuickPadView: View {
                     }
                     .buttonStyle(.bordered)
                     .disabled(noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                    
-                    Spacer()
                     
                     Button("Save to Notes") {
                         saveToNotes()
@@ -211,7 +221,7 @@ struct QuickPadView: View {
                             self.noteText = ""
                             self.saveDraft()
                             
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                                 self.statusMessage = .readyToWrite
                                 self.messageColor = .secondary
                             }
