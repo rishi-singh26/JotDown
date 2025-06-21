@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import KeyboardShortcuts
 
 struct SettingsView: View {
     @AppStorage(UserDefaultsManager.Keys.launchAtLogin) private var launchAtLogin = false
@@ -31,6 +32,26 @@ struct SettingsView: View {
                 }
             }
             .padding(.top)
+            
+            MacCustomSection {
+                HStack {
+                    Text("Toggle Menubar Popup")
+                        .frame(width: 150, alignment: .leading)
+                    Spacer()
+                    KeyboardShortcuts.Recorder("", name: .toggleMenuBarPopup)
+                        .help("Toggle Menubar Popup")
+                }
+                
+                Divider()
+                
+                HStack {
+                    Text("Toggle Window")
+                        .frame(width: 150, alignment: .leading)
+                    Spacer()
+                    KeyboardShortcuts.Recorder("", name: .toggleJotDownWindow)
+                        .help("Toggle Window")
+                }
+            }
             
             MacCustomSection {
                 HStack(alignment: .center) {

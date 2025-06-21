@@ -7,6 +7,7 @@
 
 import Cocoa
 import SwiftUI
+import KeyboardShortcuts
 
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -211,6 +212,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         appMenu.addItem(closeWindowItem)
 
         print("⌨️ Command + W shortcut registered")
+        
+        KeyboardShortcuts.onKeyUp(for: .toggleMenuBarPopup) { [self] in
+            togglePopover()
+        }
+        
+        KeyboardShortcuts.onKeyUp(for: .toggleJotDownWindow) { [self] in
+//            openSettingsWindow()
+        }
     }
 }
 
