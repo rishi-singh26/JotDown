@@ -15,8 +15,8 @@ class SettingsWindowController: NSWindowController {
         
         let window = NSWindow(contentViewController: tabViewController)
         window.title = "Settings"
-        window.setContentSize(NSSize(width: 480, height: 320))
-        window.minSize = NSSize(width: 480, height: 320)
+        window.setContentSize(NSSize(width: 480, height: 520))
+        window.minSize = NSSize(width: 480, height: 520)
         window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
         window.isReleasedWhenClosed = false
         window.center()

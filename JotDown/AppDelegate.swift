@@ -15,7 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var popover: NSPopover!
     
     var settingsWindowController: SettingsWindowController?
-    var quickPadWindowController: NSWindowController?
+    var jotDownWindowController: NSWindowController?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("🚀 App did finish launching - AppDelegate working!")
@@ -116,22 +116,37 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    // MARK: - QuickPad Window
+    // MARK: - JotDown Window
     @objc func openJotDownWindow() {
         print("📝 Opening QuickPad Window...")
         
-        if quickPadWindowController == nil {
+        if jotDownWindowController == nil {
+            // Track pinned state
+            var isPinnedToTop = false
+            
+            // Define toggle pin action
+            let togglePinToTop: () -> Void = { [weak self] in
+                guard let window = self?.jotDownWindowController?.window else { return }
+                isPinnedToTop.toggle()
+                
+                if isPinnedToTop {
+                    window.level = .floating
+                    print("📌 Window pinned to top")
+                } else {
+                    window.level = .normal
+                    print("📍 Window unpinned")
+                }
+            }
+            
             let quickPadView = QuickPadView(
-                onClose: { [weak self] in
-                    self?.closeJotDownWindow()
-                },
                 onQuit: { [weak self] in
                     self?.quitApp()
                 },
                 openSettings: { [weak self] in
                     self?.openSettingsWindow()
                 },
-                isWindow: true
+                togglePin: togglePinToTop,
+                isWindow: true,
             )
             
             let hostingController = NSHostingController(rootView: quickPadView)
@@ -144,7 +159,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             window.isReleasedWhenClosed = false
             window.center()
             
-            // Make window translucent
+            // Make window translucent START
             window.isOpaque = false
             window.backgroundColor = .clear
             
@@ -168,8 +183,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             ])
             
             window.contentView = visualEffectView
+            // Make window translucent END
             
-            quickPadWindowController = NSWindowController(window: window)
+            jotDownWindowController = NSWindowController(window: window)
             
             NotificationCenter.default.addObserver(
                 self,
@@ -182,18 +198,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             showInDock()
         }
         
-        quickPadWindowController?.showWindow(nil)
-        quickPadWindowController?.window?.makeKeyAndOrderFront(nil)
+        jotDownWindowController?.showWindow(nil)
+        jotDownWindowController?.window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
         
     @objc func closeJotDownWindow() {
         print("🛑 Closing QuickPad Window...")
-        
-        // Hide app from dock when settings window closes
-        hideFromDock()
-        
-        quickPadWindowController?.window?.performClose(nil)
+        jotDownWindowController?.window?.performClose(nil)
     }
         
     @objc func jotDownWindowWillClose(_ notification: Notification) {
@@ -202,10 +214,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NotificationCenter.default.removeObserver(
             self,
             name: NSWindow.willCloseNotification,
-            object: quickPadWindowController?.window
+            object: jotDownWindowController?.window
         )
         
-        quickPadWindowController = nil
+        // Only hide if Settings window is not open
+        if settingsWindowController == nil {
+            hideFromDock()
+        }
+        
+        jotDownWindowController = nil
     }
     
     // MARK: - Settings Window
@@ -245,8 +262,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             object: settingsWindowController?.window
         )
         
-        // Hide app from dock when settings window closes
-        hideFromDock()
+        // Only hide if JotDown window is not open
+        if jotDownWindowController == nil {
+            hideFromDock()
+        }
         
         // Clean up the window controller
         settingsWindowController = nil
@@ -260,12 +279,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func closeSettingsWindow() {
         print("🛑 Closing Settings Window...")
         settingsWindowController?.window?.performClose(nil)
-    }
-    
-    @objc func closeAllWindow() {
-        print("🛑 Closing Settings Window...")
-        closeSettingsWindow()
-        closeJotDownWindow()
     }
     
     // MARK: - Dock Visibility Management
@@ -306,8 +319,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         print("⌨️ Command + , and Command + Q shortcuts registered")
         
         // Add Close Settings Window item (Command + W)
-        let closeWindowItem = NSMenuItem(title: "Close Window", action: #selector(closeAllWindow), keyEquivalent: "w")
-        closeWindowItem.target = self
+        
+        let closeWindowItem = NSMenuItem(
+            title: "Close Window",
+            action: #selector(NSWindow.performClose(_:)),
+            keyEquivalent: "w"
+        )
+        closeWindowItem.target = nil
         appMenu.addItem(closeWindowItem)
 
         print("⌨️ Command + W shortcut registered")

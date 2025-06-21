@@ -13,7 +13,7 @@ class AppleScriptManager {
     private init() {}
 
     /// Save or update note content with QuickPad ID
-    static func saveOrUpdateNote(title: String, content: String) -> (Bool, String?) { // status, error
+    static func saveNote(title: String, content: String, useMonoSpaced: Bool = false) -> (Bool, String?) { // status, error
         let script = """
         tell application "Notes"
             try
@@ -36,7 +36,7 @@ class AppleScriptManager {
                     end if
                     
                     set noteName to "\(escape(title))"
-                    set noteBody to "<div>\(convertToNotesHTML(content))</div>"
+                    set noteBody to "<div>\(convertToNotesHTML(content, useMonoSpaced: useMonoSpaced))</div>"
                     
                     make new note at targetFolder with properties {name:noteName, body:noteBody}
                 end tell
@@ -94,7 +94,7 @@ class AppleScriptManager {
 
     }
     
-    static private func convertToNotesHTML(_ text: String) -> String {
+    static private func convertToNotesHTML(_ text: String, useMonoSpaced: Bool) -> String {
         let paragraphs = text.components(separatedBy: .newlines)
         let htmlParagraphs = paragraphs.map { line -> String in
             let escapedLine = line
@@ -103,7 +103,7 @@ class AppleScriptManager {
                 .replacingOccurrences(of: "\r", with: "")
                 .replacingOccurrences(of: "\t", with: "&nbsp;&nbsp;&nbsp;&nbsp;")
                 .replacingOccurrences(of: "\n", with: "")
-            return "<p>\(escapedLine)</p>"
+            return useMonoSpaced ? "<code>\(escapedLine)</code>" : "<p>\(escapedLine)</p>"
         }
         return htmlParagraphs.joined()
     }

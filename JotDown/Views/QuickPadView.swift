@@ -22,15 +22,17 @@ enum StatusMessage: String {
 }
 
 struct QuickPadView: View {
-    @State private var noteText: String = ""
+    @ObservedObject var controller = AppController.shared
+    
     @State private var statusMessage: StatusMessage = .readyToWrite
     @State private var messageColor: Color = .secondary
     @State private var isLoading: Bool = false
     @FocusState private var isTextFieldFocused: Bool
     
-    let onClose: () -> Void
+    var onClose: () -> Void = {}
     let onQuit: () -> Void
     let openSettings: () -> Void
+    var togglePin: () -> Void = {}
     var isWindow: Bool = false
     
     var textFont: Font {
@@ -85,17 +87,15 @@ struct QuickPadView: View {
             // Text Editor
             VStack(alignment: .leading, spacing: 8) {
                 ScrollView {
-                    TextEditor(text: $noteText)
+                    TextEditor(text: $controller.noteText)
                         .focused($isTextFieldFocused)
                         .font(textFont)
                         .scrollContentBackground(.hidden)
                         .frame(minHeight: 180)
                         .onAppear {
-                            loadDraft()
                             isTextFieldFocused = true
                         }
-                        .onChange(of: noteText) { _, newValue in
-                            saveDraft()
+                        .onChange(of: controller.noteText) { _, newValue in
                             updateWordCount()
                         }
                 }
@@ -128,31 +128,38 @@ struct QuickPadView: View {
                         onQuit()
                     }
                     .buttonStyle(.bordered)
-                    .disabled(noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     
                     Button("Settings  ⌘ ,") {
                         openSettings()
                     }
                     .buttonStyle(.bordered)
-                    .disabled(noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    
+                    if isWindow {
+                        Button("Pin to top") {
+                            togglePin()
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    
                     Spacer()
+                    
                     Button("Clear") {
                         clearText()
                     }
                     .buttonStyle(.bordered)
-                    .disabled(noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .disabled(controller.noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     
                     Button("Copy") {
                         copyToClipboard()
                     }
                     .buttonStyle(.bordered)
-                    .disabled(noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .disabled(controller.noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     
                     Button("Save to Notes") {
                         saveToNotes()
                     }
                     .buttonStyle(.borderedProminent)
-                    .disabled(noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoading)
+                    .disabled(controller.noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoading)
                     .overlay(
                         Group {
                             if isLoading {
@@ -176,7 +183,7 @@ struct QuickPadView: View {
     }
     
     private var wordCount: Int {
-        noteText.trimmingCharacters(in: .whitespacesAndNewlines)
+        controller.noteText.trimmingCharacters(in: .whitespacesAndNewlines)
             .components(separatedBy: .whitespacesAndNewlines)
             .filter { !$0.isEmpty }
             .count
@@ -194,7 +201,7 @@ struct QuickPadView: View {
     }
     
     private func copyToClipboard() {
-        let content = noteText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let content = controller.noteText.trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard !content.isEmpty else {
             statusMessage = .nothingToCopy
@@ -216,7 +223,7 @@ struct QuickPadView: View {
     }
     
     private func saveToNotes() {
-        let content = noteText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let content = controller.noteText.trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard !content.isEmpty else {
             statusMessage = .nothingToSave
@@ -235,7 +242,7 @@ struct QuickPadView: View {
             DispatchQueue.main.async {
                 if success {
                     self.statusMessage = .saving
-                    let (status, error) = AppleScriptManager.saveOrUpdateNote(title: "", content: content)
+                    let (status, error) = AppleScriptManager.saveNote(title: "", content: content, useMonoSpaced: controller.monospaced)
                     
                     self.isLoading = false
                     
@@ -244,8 +251,7 @@ struct QuickPadView: View {
                         self.messageColor = .green
                         
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            self.noteText = ""
-                            self.saveDraft()
+                            controller.noteText = ""
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                                 self.statusMessage = .readyToWrite
@@ -303,25 +309,13 @@ struct QuickPadView: View {
     }
     
     private func clearText() {
-        noteText = ""
+        controller.noteText = ""
         statusMessage = .cleared
         messageColor = .orange
-        saveDraft()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             statusMessage = .readyToWrite
             messageColor = .secondary
-        }
-    }
-    
-    private func saveDraft() {
-        UserDefaultsManager.saveDraft(noteText)
-    }
-    
-    private func loadDraft() {
-        // Show the note text stored in user defaults when user opens menu bar popup
-        if let draft = UserDefaultsManager.loadDraft() {
-            noteText = draft
         }
     }
 }

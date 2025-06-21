@@ -30,15 +30,15 @@ class UserDefaultsManager {
         defaults.set(text, forKey: Keys.quickPadDraft)
     }
     
-    static func loadDraft() -> String? {
-        return defaults.string(forKey: Keys.quickPadDraft)
+    static func loadDraft() -> String {
+        return defaults.string(forKey: Keys.quickPadDraft) ?? ""
     }
     
     static func clearDraft() {
         defaults.removeObject(forKey: Keys.quickPadDraft)
     }
     
-    // MARK: - <#Section Heading#>
+    // MARK: - Launch At Login
     static func getLaunchAtLogin() -> Bool {
         defaults.bool(forKey: Keys.launchAtLogin)
     }
@@ -47,19 +47,39 @@ class UserDefaultsManager {
         defaults.set(value, forKey: Keys.launchAtLogin)
     }
     
+    // MARK: - Monospaced
     static func getMonoSpaced() -> Bool {
         defaults.bool(forKey: Keys.monospaced)
     }
     
+    static func setMonoSpaced(value: Bool) {
+        defaults.set(value, forKey: Keys.monospaced)
+    }
+    
+    // MARK: - FontSize
     static func getFontSize() -> Double {
         defaults.double(forKey: Keys.fontSize)
     }
     
+    static func setFontSize(value: Double) {
+        defaults.set(value, forKey: Keys.fontSize)
+    }
+    
+    // MARK: - Window Translucensy
     static func getWindowTranslucent() -> Bool {
         defaults.bool(forKey: Keys.windowTranslucent)
     }
     
+    static func setWindowTranslucency(value: Bool) {
+        defaults.set(value, forKey: Keys.windowTranslucent)
+    }
+    
+    // MARK: - Popup Translucensy
     static func getPopupTranslucent() -> Bool {
         defaults.bool(forKey: Keys.popupTranslucent)
+    }
+    
+    static func setPopupTranslucent(value: Bool) {
+        defaults.set(value, forKey: Keys.popupTranslucent)
     }
 }
