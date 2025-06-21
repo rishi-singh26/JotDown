@@ -136,19 +136,19 @@ struct QuickPadView: View {
                 
                 HStack(spacing: 12) {
                     if !isWindow {
-                        Button("Quit  ⌘ Q") {
+                        Button("Quit  ⌘Q") {
                             onQuit()
                         }
                         .buttonStyle(.bordered)
                     }
                     
-                    Button("Preferences  ⌘ ,") {
+                    Button("Preferences  ⌘,") {
                         openSettings()
                     }
                     .buttonStyle(.bordered)
                     
                     if isWindow {
-                        Button("Pin/Unpin  ⌘ P") {
+                        Button("Pin/Unpin  ⌘P") {
                             togglePin()
                         }
                         .keyboardShortcut("p", modifiers: [.command])
@@ -157,21 +157,21 @@ struct QuickPadView: View {
                     
                     Spacer()
                     
-                    Button("Clear  ⌘ K") {
+                    Button("Clear  ⌘K") {
                         clearText()
                     }
                     .keyboardShortcut("k", modifiers: [.command])
                     .buttonStyle(.bordered)
                     .disabled(isNoteEmpty)
                     
-                    Button("Copy  ⌘ C") {
+                    Button("Copy  ⌘⇧C") {
                         copyToClipboard()
                     }
-                    .keyboardShortcut("c", modifiers: [.command])
+                    .keyboardShortcut("c", modifiers: [.command, .shift])
                     .buttonStyle(.bordered)
                     .disabled(isNoteEmpty)
                     
-                    Button("Send to Notes  ⌘ S") {
+                    Button("Send to Notes  ⌘S") {
                         saveToNotes()
                     }
                     .keyboardShortcut("s", modifiers: [.command])
