@@ -15,6 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var popover: NSPopover!
     
     var settingsWindowController: SettingsWindowController?
+    var quickPadWindowController: NSWindowController?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("🚀 App did finish launching - AppDelegate working!")
@@ -115,6 +116,98 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    // MARK: - QuickPad Window
+    @objc func openJotDownWindow() {
+        print("📝 Opening QuickPad Window...")
+        
+        if quickPadWindowController == nil {
+            let quickPadView = QuickPadView(
+                onClose: { [weak self] in
+                    self?.closeJotDownWindow()
+                },
+                onQuit: { [weak self] in
+                    self?.quitApp()
+                },
+                openSettings: { [weak self] in
+                    self?.openSettingsWindow()
+                },
+                isWindow: true
+            )
+            
+            let hostingController = NSHostingController(rootView: quickPadView)
+            let window = NSWindow(
+                contentViewController: hostingController
+            )
+            window.title = "JotDown"
+            window.setContentSize(NSSize(width: UserDefaultsManager.width, height: UserDefaultsManager.height))
+            window.styleMask = [.titled, .closable, .resizable]
+            window.isReleasedWhenClosed = false
+            window.center()
+            
+            // Make window translucent
+            window.isOpaque = false
+            window.backgroundColor = .clear
+            
+            // Add NSVisualEffectView for translucency
+            let visualEffectView = NSVisualEffectView()
+            visualEffectView.blendingMode = .behindWindow
+            visualEffectView.material = .hudWindow   // You can also try .underWindowBackground, .sidebar, .menu, etc.
+            visualEffectView.state = .active
+            
+            // Embed SwiftUI content inside visualEffectView
+            visualEffectView.translatesAutoresizingMaskIntoConstraints = false
+            visualEffectView.addSubview(hostingController.view)
+            
+            hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                hostingController.view.leadingAnchor.constraint(equalTo: visualEffectView.leadingAnchor),
+                hostingController.view.trailingAnchor.constraint(equalTo: visualEffectView.trailingAnchor),
+                hostingController.view.topAnchor.constraint(equalTo: visualEffectView.topAnchor),
+                hostingController.view.bottomAnchor.constraint(equalTo: visualEffectView.bottomAnchor)
+            ])
+            
+            window.contentView = visualEffectView
+            
+            quickPadWindowController = NSWindowController(window: window)
+            
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(jotDownWindowWillClose(_:)),
+                name: NSWindow.willCloseNotification,
+                object: window
+            )
+            
+            // Show app in dock when settings window opens
+            showInDock()
+        }
+        
+        quickPadWindowController?.showWindow(nil)
+        quickPadWindowController?.window?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+        
+    @objc func closeJotDownWindow() {
+        print("🛑 Closing QuickPad Window...")
+        
+        // Hide app from dock when settings window closes
+        hideFromDock()
+        
+        quickPadWindowController?.window?.performClose(nil)
+    }
+        
+    @objc func jotDownWindowWillClose(_ notification: Notification) {
+        print("🛑 QuickPad Window will close - cleaning up...")
+        
+        NotificationCenter.default.removeObserver(
+            self,
+            name: NSWindow.willCloseNotification,
+            object: quickPadWindowController?.window
+        )
+        
+        quickPadWindowController = nil
+    }
+    
     // MARK: - Settings Window
     @objc func openSettingsWindow() {
         print("⚙️ Opening Settings Window...")
@@ -169,6 +262,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         settingsWindowController?.window?.performClose(nil)
     }
     
+    @objc func closeAllWindow() {
+        print("🛑 Closing Settings Window...")
+        closeSettingsWindow()
+        closeJotDownWindow()
+    }
+    
     // MARK: - Dock Visibility Management
     private func showInDock() {
         print("🔍 Showing app in dock...")
@@ -207,7 +306,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         print("⌨️ Command + , and Command + Q shortcuts registered")
         
         // Add Close Settings Window item (Command + W)
-        let closeWindowItem = NSMenuItem(title: "Close Window", action: #selector(closeSettingsWindow), keyEquivalent: "w")
+        let closeWindowItem = NSMenuItem(title: "Close Window", action: #selector(closeAllWindow), keyEquivalent: "w")
         closeWindowItem.target = self
         appMenu.addItem(closeWindowItem)
 
@@ -218,7 +317,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         KeyboardShortcuts.onKeyUp(for: .toggleJotDownWindow) { [self] in
-//            openSettingsWindow()
+            openJotDownWindow()
         }
     }
 }

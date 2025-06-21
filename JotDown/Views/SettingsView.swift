@@ -12,6 +12,8 @@ struct SettingsView: View {
     @AppStorage(UserDefaultsManager.Keys.launchAtLogin) private var launchAtLogin = false
     @AppStorage(UserDefaultsManager.Keys.monospaced) private var monospaced = false
     @AppStorage(UserDefaultsManager.Keys.fontSize) private var fontSize: Double = 15.0
+    @AppStorage(UserDefaultsManager.Keys.windowTranslucent) private var isWindowTranslucent = false
+    @AppStorage(UserDefaultsManager.Keys.popupTranslucent) private var isPopupTranslucent = false
     
     let minFontSize = 10
     let maxFontSize = 30
@@ -33,7 +35,7 @@ struct SettingsView: View {
             }
             .padding(.top)
             
-            MacCustomSection {
+            MacCustomSection(header: "JotDown MenuBar Popup Settings") {
                 HStack {
                     Text("Toggle Menubar Popup")
                         .frame(width: 150, alignment: .leading)
@@ -44,12 +46,33 @@ struct SettingsView: View {
                 
                 Divider()
                 
+                HStack(alignment: .center) {
+                    Text("Translucent Background")
+                        .frame(width: 150, alignment: .leading)
+                    Spacer()
+                    Toggle("", isOn: $isPopupTranslucent)
+                        .toggleStyle(.switch)
+                        .help("Translucent Background for the popup")
+                }
+            }
+            MacCustomSection(header: "JotDown Window Settings") {
                 HStack {
                     Text("Toggle Window")
                         .frame(width: 150, alignment: .leading)
                     Spacer()
                     KeyboardShortcuts.Recorder("", name: .toggleJotDownWindow)
                         .help("Toggle Window")
+                }
+                
+                Divider()
+                
+                HStack(alignment: .center) {
+                    Text("Translucent Background")
+                        .frame(width: 150, alignment: .leading)
+                    Spacer()
+                    Toggle("", isOn: $isWindowTranslucent)
+                        .toggleStyle(.switch)
+                        .help("Translucent Background for the window")
                 }
             }
             

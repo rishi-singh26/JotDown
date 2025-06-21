@@ -31,6 +31,7 @@ struct QuickPadView: View {
     let onClose: () -> Void
     let onQuit: () -> Void
     let openSettings: () -> Void
+    var isWindow: Bool = false
     
     var textFont: Font {
         let fontSize = UserDefaultsManager.getFontSize()
@@ -43,31 +44,43 @@ struct QuickPadView: View {
         return .system(size: fontSize)
     }
     
+    var background: Color {
+        if isWindow {
+            return UserDefaultsManager.getWindowTranslucent() ? .clear : Color(NSColor.textBackgroundColor)
+        } else {
+            return UserDefaultsManager.getPopupTranslucent() ? .clear : Color(NSColor.textBackgroundColor)
+        }
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             // Header
-            HStack {
-                Text("JotDown")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                
-                Spacer()
-                
-                Button(action: {
-                    onClose()
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.secondary)
-                        .font(.title2)
+            if !isWindow {
+                Group {
+                    HStack {
+                        Text("JotDown")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            onClose()
+                        }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.secondary)
+                                .font(.title2)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .help("Close")
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 12)
+                    .padding(.bottom, 8)
+                    
+                    Divider()
                 }
-                .buttonStyle(PlainButtonStyle())
-                .help("Close")
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 12)
-            .padding(.bottom, 8)
-            
-            Divider()
             
             // Text Editor
             VStack(alignment: .leading, spacing: 8) {
@@ -86,7 +99,7 @@ struct QuickPadView: View {
                             updateWordCount()
                         }
                 }
-                .background(Color(NSColor.textBackgroundColor))
+                .background(background)
                 .cornerRadius(8)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
@@ -153,7 +166,7 @@ struct QuickPadView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 16)
         }
-        .frame(width: CGFloat(UserDefaultsManager.width), height: CGFloat(UserDefaultsManager.height))
+//        .frame(width: CGFloat(UserDefaultsManager.width), height: CGFloat(UserDefaultsManager.height))
 //        .background(Color(NSColor.windowBackgroundColor))
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

@@ -18,6 +18,8 @@ class UserDefaultsManager {
         static let launchAtLogin = "launchAtLogin"
         static let monospaced = "monospaced"
         static let fontSize = "fontSize"
+        static let windowTranslucent = "windowTranslucent"
+        static let popupTranslucent = "popupTranslucent"
     }
     
     private init() {}
@@ -51,5 +53,13 @@ class UserDefaultsManager {
     
     static func getFontSize() -> Double {
         defaults.double(forKey: Keys.fontSize)
+    }
+    
+    static func getWindowTranslucent() -> Bool {
+        defaults.bool(forKey: Keys.windowTranslucent)
+    }
+    
+    static func getPopupTranslucent() -> Bool {
+        defaults.bool(forKey: Keys.popupTranslucent)
     }
 }
