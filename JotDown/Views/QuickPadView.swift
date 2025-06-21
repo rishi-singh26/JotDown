@@ -71,7 +71,7 @@ struct QuickPadView: View {
             if !isWindow {
                 Group {
                     HStack {
-                        Text("JotDown")
+                        Text(UserDefaultsManager.appName)
                             .font(.headline)
                             .fontWeight(.semibold)
                         
@@ -171,9 +171,10 @@ struct QuickPadView: View {
                     .buttonStyle(.bordered)
                     .disabled(isNoteEmpty)
                     
-                    Button("Save to Notes") {
+                    Button("Send to Notes  ⌘ S") {
                         saveToNotes()
                     }
+                    .keyboardShortcut("s", modifiers: [.command])
                     .buttonStyle(.borderedProminent)
                     .disabled(isNoteEmpty || isLoading)
                     .overlay(
@@ -297,7 +298,7 @@ struct QuickPadView: View {
         1. Open System Settings
         2. Go to Privacy & Security
         3. Click on "Automation"
-        4. Find "JotDown" in the list
+        4. Find "\(UserDefaultsManager.appName)" in the list
         5. Check the box next to "Notes"
         
         Then try saving again.

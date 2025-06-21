@@ -10,6 +10,7 @@ import Foundation
 class UserDefaultsManager {
     static let width = 600
     static let height = 450
+    static let appName = "JotDown"
     
     static private let defaults = UserDefaults.standard
     

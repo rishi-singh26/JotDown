@@ -63,7 +63,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         print("✅ Status item button created")
         
         // Configure button appearance
-        button.image = NSImage(systemSymbolName: "note.text", accessibilityDescription: "JotDown")
+        button.image = NSImage(systemSymbolName: "note.text", accessibilityDescription: UserDefaultsManager.appName)
         button.action = #selector(togglePopover)
         button.target = self
         
@@ -154,7 +154,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let window = NSWindow(
                 contentViewController: hostingController
             )
-            window.title = "JotDown"
+            window.title = UserDefaultsManager.appName
             window.styleMask = [.titled, .closable, .resizable, .fullSizeContentView]
             window.titleVisibility = .hidden
             window.titlebarAppearsTransparent = true
@@ -320,7 +320,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         appMenu.addItem(NSMenuItem.separator())
         
         // Add Quit item (Command + Q)
-        let quitItem = NSMenuItem(title: "Quit JotDown", action: #selector(quitApp), keyEquivalent: "q")
+        let quitItem = NSMenuItem(title: "Quit \(UserDefaultsManager.appName)", action: #selector(quitApp), keyEquivalent: "q")
         quitItem.target = self
         appMenu.addItem(quitItem)
         
@@ -352,7 +352,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         windowMenu.addItem(NSMenuItem.separator())
         
         // Custom window menu items for your app
-        let openJotDownWindowItem = NSMenuItem(title: "Open JotDown Window", action: #selector(openJotDownWindow), keyEquivalent: KeyboardShortcuts.Name.toggleJotDownWindow.rawValue)
+        let openJotDownWindowItem = NSMenuItem(title: "Open \(UserDefaultsManager.appName) Window", action: #selector(openJotDownWindow), keyEquivalent: KeyboardShortcuts.Name.toggleJotDownWindow.rawValue)
         openJotDownWindowItem.target = self
         windowMenu.addItem(openJotDownWindowItem)
         

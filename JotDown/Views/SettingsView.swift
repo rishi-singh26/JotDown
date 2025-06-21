@@ -63,7 +63,7 @@ struct SettingsView: View {
                 }
             }
             
-            MacCustomSection(header: "JotDown MenuBar Popup Settings") {
+            MacCustomSection(header: "\(UserDefaultsManager.appName) MenuBar Popup Settings") {
                 HStack {
                     Text("Toggle Menubar Popup")
                         .frame(width: 150, alignment: .leading)
@@ -83,7 +83,7 @@ struct SettingsView: View {
                         .help("Translucent Background for the popup")
                 }
             }
-            MacCustomSection(header: "JotDown Window Settings") {
+            MacCustomSection(header: "\(UserDefaultsManager.appName) Window Settings") {
                 HStack {
                     Text("Toggle Window")
                         .frame(width: 150, alignment: .leading)
@@ -111,12 +111,12 @@ struct SettingsView: View {
 struct AboutView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("About JotDown")
+            Text("About \(UserDefaultsManager.appName)")
                 .font(.largeTitle)
                 .bold()
             
             Text("Version 1.0")
-            Text("JotDown v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
+            Text("\(UserDefaultsManager.appName) v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
                 .font(.caption2)
                 .foregroundColor(.secondary)
             Text("Created by Rishi Singh")

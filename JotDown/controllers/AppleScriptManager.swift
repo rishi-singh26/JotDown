@@ -18,7 +18,7 @@ class AppleScriptManager {
         tell application "Notes"
             try
                 tell account "iCloud"
-                    set folderName to "JotDown"
+                    set folderName to "\(UserDefaultsManager.appName)"
         
                     -- Check if folder exists
                     set folderExists to false
