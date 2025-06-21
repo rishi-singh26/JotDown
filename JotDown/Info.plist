@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>NSAppleEventsUsageDescription</key>
-	<string>JotDown needs permission to save notes to the Apple Notes app.</string>
+	<string>JotDown requires permission to save notes directly to the Apple Notes app.</string>
 	<key>LSUIElement</key>
 	<true/>
 </dict>

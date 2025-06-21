@@ -109,23 +109,81 @@ struct SettingsView: View {
 }
 
 struct AboutView: View {
+    @Environment(\.openURL) var openURL
+    
+    @State private var linkToOpen = ""
+    @State private var showLinkOpenConfirmation = false
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("About \(UserDefaultsManager.appName)")
-                .font(.largeTitle)
-                .bold()
+        ScrollView {
+            MacCustomSection(header: "") {
+                HStack {
+                    Image("AppIconImage")
+                        .resizable()
+                        .frame(width: 70, height: 70)
+                        .padding(.trailing, 15)
+                    VStack(alignment: .leading) {
+                        Text("TempBox")
+                            .font(.largeTitle.bold())
+                        Text("\(UserDefaultsManager.appName) v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
+                            .font(.callout)
+                        Text("Developed by Rishi Singh")
+                            .font(.callout)
+                    }
+                    Spacer()
+                }
+            }
+            .padding(.top)
             
-            Text("Version 1.0")
-            Text("\(UserDefaultsManager.appName) v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
-                .font(.caption2)
-                .foregroundColor(.secondary)
-            Text("Created by Rishi Singh")
-
-            Spacer()
+            MacCustomSection {
+                VStack(alignment: .leading) {
+                    Button {
+                        showLinkConfirmation(url: "https://letterbird.co/tempbox")
+                    } label: {
+                        Label("Website", systemImage: "network")
+                    }
+                    .buttonStyle(.link)
+                    
+                    Divider()
+                    
+                    Button {
+                        showLinkConfirmation(url: "https://letterbird.co/tempbox")
+                    } label: {
+                        Label("Contact Us", systemImage: "text.bubble")
+                    }
+                    .buttonStyle(.link)
+                    
+                    Divider()
+                    
+                    Button {
+                        showLinkConfirmation(url: "https://letterbird.co/tempbox")
+                    } label: {
+                        Label("Privacy Policy", systemImage: "bolt.shield.fill")
+                    }
+                    .buttonStyle(.link)
+                }
+            }
+            .padding(.bottom)
         }
+        .confirmationDialog("Open Link?", isPresented: $showLinkOpenConfirmation, actions: {
+            Button("Cancel", role: .cancel) {}
+            Button("Yes", role: .destructive) {
+                if let url = URL(string: linkToOpen) {
+                    openURL(url)
+                }
+            }
+        }, message: {
+            Text(linkToOpen)
+        })
+        
+    }
+    
+    func showLinkConfirmation(url: String) {
+        linkToOpen = url
+        showLinkOpenConfirmation.toggle()
     }
 }
 
 #Preview {
-    SettingsView()
+    AboutView()
 }

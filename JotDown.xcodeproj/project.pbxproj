@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5B0E974D2E05DEFF00BA7CCC /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 5B0E974C2E05DEFF00BA7CCC /* KeyboardShortcuts */; };
+		5B6AC3D12E06D3FB000AF661 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 5B6AC3D02E06D3FB000AF661 /* KeyboardShortcuts */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,7 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5B0E974D2E05DEFF00BA7CCC /* KeyboardShortcuts in Frameworks */,
+				5B6AC3D12E06D3FB000AF661 /* KeyboardShortcuts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +130,7 @@
 			);
 			name = JotDown;
 			packageProductDependencies = (
-				5B0E974C2E05DEFF00BA7CCC /* KeyboardShortcuts */,
+				5B6AC3D02E06D3FB000AF661 /* KeyboardShortcuts */,
 			);
 			productName = JotDown;
 			productReference = 5B0E96672E046AB000BA7CCC /* JotDown.app */;
@@ -419,6 +419,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = JotDown/JotDown.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -442,6 +443,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = in.rishisingh.JotDown;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -453,6 +455,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = JotDown/JotDown.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -476,6 +479,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = in.rishisingh.JotDown;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -606,7 +610,7 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5B0E974C2E05DEFF00BA7CCC /* KeyboardShortcuts */ = {
+		5B6AC3D02E06D3FB000AF661 /* KeyboardShortcuts */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5B0E974B2E05DEFF00BA7CCC /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
 			productName = KeyboardShortcuts;
