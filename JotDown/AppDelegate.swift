@@ -153,9 +153,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let window = NSWindow(
                 contentViewController: hostingController
             )
-            window.title = "JotDown"
+            window.styleMask = [.titled, .closable, .resizable, .fullSizeContentView]
+            window.titleVisibility = .hidden
+            window.titlebarAppearsTransparent = true
             window.setContentSize(NSSize(width: UserDefaultsManager.width, height: UserDefaultsManager.height))
-            window.styleMask = [.titled, .closable, .resizable]
             window.isReleasedWhenClosed = false
             window.center()
             
@@ -168,6 +169,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             visualEffectView.blendingMode = .behindWindow
             visualEffectView.material = .hudWindow   // You can also try .underWindowBackground, .sidebar, .menu, etc.
             visualEffectView.state = .active
+            
+            // Add border around the no title window START
+            visualEffectView.wantsLayer = true
+            visualEffectView.layer?.borderWidth = 1
+            visualEffectView.layer?.borderColor = NSColor.gray.withAlphaComponent(0.5).cgColor
+            visualEffectView.layer?.cornerRadius = 12
+            // Add border around the no title window END
             
             // Embed SwiftUI content inside visualEffectView
             visualEffectView.translatesAutoresizingMaskIntoConstraints = false
