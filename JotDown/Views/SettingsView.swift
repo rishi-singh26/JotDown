@@ -116,6 +116,9 @@ struct AboutView: View {
                 .bold()
             
             Text("Version 1.0")
+            Text("JotDown v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
+                .font(.caption2)
+                .foregroundColor(.secondary)
             Text("Created by Rishi Singh")
 
             Spacer()

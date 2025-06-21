@@ -48,6 +48,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
     
+    // MARK: - Popover management
     private func setupStatusItem() {
         print("📍 Setting up status item...")
         
@@ -153,6 +154,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let window = NSWindow(
                 contentViewController: hostingController
             )
+            window.title = "JotDown"
             window.styleMask = [.titled, .closable, .resizable, .fullSizeContentView]
             window.titleVisibility = .hidden
             window.titlebarAppearsTransparent = true
@@ -167,7 +169,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             // Add NSVisualEffectView for translucency
             let visualEffectView = NSVisualEffectView()
             visualEffectView.blendingMode = .behindWindow
-            visualEffectView.material = .hudWindow   // You can also try .underWindowBackground, .sidebar, .menu, etc.
+            visualEffectView.material = .sidebar   // You can also try .underWindowBackground, .sidebar, .menu, etc.
             visualEffectView.state = .active
             
             // Add border around the no title window START
@@ -210,12 +212,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         jotDownWindowController?.window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
-        
+    
     @objc func closeJotDownWindow() {
         print("🛑 Closing QuickPad Window...")
         jotDownWindowController?.window?.performClose(nil)
     }
-        
+    
     @objc func jotDownWindowWillClose(_ notification: Notification) {
         print("🛑 QuickPad Window will close - cleaning up...")
         
@@ -236,7 +238,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Settings Window
     @objc func openSettingsWindow() {
         print("⚙️ Opening Settings Window...")
-
+        
         if settingsWindowController == nil {
             settingsWindowController = SettingsWindowController()
             
@@ -248,7 +250,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 object: settingsWindowController?.window
             )
         }
-
+        
         // Show app in dock when settings window opens
         showInDock()
         
@@ -303,41 +305,67 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func setupKeyboardShortcuts() {
         // Create the main menu
         let mainMenu = NSMenu()
+        
+        // App menu
         let appMenuItem = NSMenuItem()
         mainMenu.addItem(appMenuItem)
-        NSApp.mainMenu = mainMenu
-        
-        // Create the App menu (the one named after your app)
         let appMenu = NSMenu()
         appMenuItem.submenu = appMenu
         
         // Add Settings item (Command + ,)
-        let settingsItem = NSMenuItem(title: "Settings...", action: #selector(openSettingsWindow), keyEquivalent: ",")
+        let settingsItem = NSMenuItem(title: "Preferences", action: #selector(openSettingsWindow), keyEquivalent: ",")
         settingsItem.target = self
         appMenu.addItem(settingsItem)
         
         appMenu.addItem(NSMenuItem.separator())
         
         // Add Quit item (Command + Q)
-        let quitTitle = "Quit JotDown"
-        let quitItem = NSMenuItem(title: quitTitle, action: #selector(quitApp), keyEquivalent: "q")
+        let quitItem = NSMenuItem(title: "Quit JotDown", action: #selector(quitApp), keyEquivalent: "q")
         quitItem.target = self
         appMenu.addItem(quitItem)
         
-        print("⌨️ Command + , and Command + Q shortcuts registered")
+        // Add Edit menu with standard shortcuts
+        let editMenuItem = NSMenuItem()
+        mainMenu.addItem(editMenuItem)
+        let editMenu = NSMenu(title: "Edit")
+        editMenuItem.submenu = editMenu
         
-        // Add Close Settings Window item (Command + W)
+        // Standard edit menu items
+        editMenu.addItem(NSMenuItem(title: "Undo", action: Selector(("undo:")), keyEquivalent: "z"))
+        editMenu.addItem(NSMenuItem(title: "Redo", action: Selector(("redo:")), keyEquivalent: "Z"))
+        editMenu.addItem(NSMenuItem.separator())
+        editMenu.addItem(NSMenuItem(title: "Cut", action: #selector(NSText.cut(_:)), keyEquivalent: "x"))
+        editMenu.addItem(NSMenuItem(title: "Copy", action: #selector(NSText.copy(_:)), keyEquivalent: "c"))
+        editMenu.addItem(NSMenuItem(title: "Paste", action: #selector(NSText.paste(_:)), keyEquivalent: "v"))
+        editMenu.addItem(NSMenuItem.separator())
+        editMenu.addItem(NSMenuItem(title: "Select All", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a"))
         
-        let closeWindowItem = NSMenuItem(
-            title: "Close Window",
-            action: #selector(NSWindow.performClose(_:)),
-            keyEquivalent: "w"
-        )
-        closeWindowItem.target = nil
-        appMenu.addItem(closeWindowItem)
-
-        print("⌨️ Command + W shortcut registered")
+        // Add Window menu
+        let windowMenuItem = NSMenuItem()
+        mainMenu.addItem(windowMenuItem)
+        let windowMenu = NSMenu(title: "Window")
+        windowMenuItem.submenu = windowMenu
         
+        // Standard window menu items
+        windowMenu.addItem(NSMenuItem(title: "Minimize", action: #selector(NSWindow.miniaturize(_:)), keyEquivalent: "m"))
+        windowMenu.addItem(NSMenuItem(title: "Close", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w"))
+        windowMenu.addItem(NSMenuItem.separator())
+        
+        // Custom window menu items for your app
+        let openJotDownWindowItem = NSMenuItem(title: "Open JotDown Window", action: #selector(openJotDownWindow), keyEquivalent: KeyboardShortcuts.Name.toggleJotDownWindow.rawValue)
+        openJotDownWindowItem.target = self
+        windowMenu.addItem(openJotDownWindowItem)
+        
+        let openSettingsWindowItem = NSMenuItem(title: "Open Settings Window", action: #selector(openSettingsWindow), keyEquivalent: ",")
+        openSettingsWindowItem.target = self
+        windowMenu.addItem(openSettingsWindowItem)
+        
+        // Tell NSApp to manage this as the window menu (enables automatic window list)
+        NSApp.windowsMenu = windowMenu
+        
+        NSApp.mainMenu = mainMenu
+        
+        // Your existing keyboard shortcuts code...
         KeyboardShortcuts.onKeyUp(for: .toggleMenuBarPopup) { [self] in
             togglePopover()
         }

@@ -54,6 +54,17 @@ struct QuickPadView: View {
         }
     }
     
+    private var isNoteEmpty: Bool {
+        controller.noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+    
+    private var wordCount: Int {
+        controller.noteText.trimmingCharacters(in: .whitespacesAndNewlines)
+            .components(separatedBy: .whitespacesAndNewlines)
+            .filter { !$0.isEmpty }
+            .count
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             // Header
@@ -124,42 +135,47 @@ struct QuickPadView: View {
                 }
                 
                 HStack(spacing: 12) {
-                    Button("Quit  ⌘ Q") {
-                        onQuit()
+                    if !isWindow {
+                        Button("Quit  ⌘ Q") {
+                            onQuit()
+                        }
+                        .buttonStyle(.bordered)
                     }
-                    .buttonStyle(.bordered)
                     
-                    Button("Settings  ⌘ ,") {
+                    Button("Preferences  ⌘ ,") {
                         openSettings()
                     }
                     .buttonStyle(.bordered)
                     
                     if isWindow {
-                        Button("Pin to top") {
+                        Button("Pin/Unpin  ⌘ P") {
                             togglePin()
                         }
+                        .keyboardShortcut("p", modifiers: [.command])
                         .buttonStyle(.bordered)
                     }
                     
                     Spacer()
                     
-                    Button("Clear") {
+                    Button("Clear  ⌘ K") {
                         clearText()
                     }
+                    .keyboardShortcut("k", modifiers: [.command])
                     .buttonStyle(.bordered)
-                    .disabled(controller.noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .disabled(isNoteEmpty)
                     
-                    Button("Copy") {
+                    Button("Copy  ⌘ C") {
                         copyToClipboard()
                     }
+                    .keyboardShortcut("c", modifiers: [.command])
                     .buttonStyle(.bordered)
-                    .disabled(controller.noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .disabled(isNoteEmpty)
                     
                     Button("Save to Notes") {
                         saveToNotes()
                     }
                     .buttonStyle(.borderedProminent)
-                    .disabled(controller.noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoading)
+                    .disabled(isNoteEmpty || isLoading)
                     .overlay(
                         Group {
                             if isLoading {
@@ -173,20 +189,14 @@ struct QuickPadView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 16)
         }
-//        .frame(width: CGFloat(UserDefaultsManager.width), height: CGFloat(UserDefaultsManager.height))
-//        .background(Color(NSColor.windowBackgroundColor))
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                isTextFieldFocused = true
-            }
-        }
     }
     
-    private var wordCount: Int {
-        controller.noteText.trimmingCharacters(in: .whitespacesAndNewlines)
-            .components(separatedBy: .whitespacesAndNewlines)
-            .filter { !$0.isEmpty }
-            .count
+    private func selectAllText() {
+        // For TextEditor, we can use NSApp to send the select all command
+        if let window = NSApp.keyWindow {
+            window.makeFirstResponder(window.firstResponder)
+            NSApp.sendAction(#selector(NSText.selectAll(_:)), to: nil, from: nil)
+        }
     }
     
     private func updateWordCount() {
