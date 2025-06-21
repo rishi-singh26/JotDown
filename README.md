@@ -1,6 +1,6 @@
 # JotDown
 Menubar extension for Apple Notes.
 
-<img src="Assets/JotDownPreview.png" alt="iOS App screenshot highlighting import and export feature" />
-<img src="Assets/JotDown-Preview2.png" alt="iOS App screenshot highlighting import and export feature" />
-<img src="Assets/JotDown-Settings.png" alt="iOS App screenshot highlighting import and export feature" width="49%" />
+<img src="Assets/JotDown2.png" alt="JotDown application open from the menubar on a mac" />
+<img src="Assets/JotDown1.png" alt="JotDown application window on a mac" />
+<img src="Assets/JotDown-Settings.png" alt="JotDown application settings window" width="55%" />
