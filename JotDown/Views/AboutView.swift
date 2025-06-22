@@ -22,9 +22,9 @@ struct AboutView: View {
                         .frame(width: 70, height: 70)
                         .padding(.trailing, 15)
                     VStack(alignment: .leading) {
-                        Text(UserDefaultsManager.appName)
+                        Text(AppConstants.appName)
                             .font(.largeTitle.bold())
-                        Text("\(UserDefaultsManager.appName) v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
+                        Text("\(AppConstants.appName) v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
                             .font(.callout)
                         Text("Developed by Rishi Singh")
                             .font(.callout)
@@ -60,19 +60,6 @@ struct AboutView: View {
                         Label("Privacy Policy", systemImage: "bolt.shield.fill")
                     }
                     .buttonStyle(.link)
-                }
-            }
-            
-            MacCustomSection(header: "Acknowledgements") {
-                VStack(alignment: .leading) {
-                    Button {
-                        showLinkConfirmation(url: "https://github.com/sindresorhus/KeyboardShortcuts")
-                    } label: {
-                        Text("KeyboardShortcuts")
-                    }
-                    .buttonStyle(.link)
-                    
-                    Divider()
                 }
             }
             .padding(.bottom)

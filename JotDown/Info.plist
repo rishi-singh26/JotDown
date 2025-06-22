@@ -6,5 +6,9 @@
 	<string>JotDown requires permission to save notes directly to the Apple Notes app.</string>
 	<key>LSUIElement</key>
 	<true/>
+	<key>SUPublicEDKey</key>
+	<string>RKB0BVpRGvOu2CgxSSB7MG7lXIQhAg8ZQQHyu8eFCwA=</string>
+	<key>SUFeedURL</key>
+	<string>https://jotdown.rishisingh.in/updates/appcast.xml</string>
 </dict>
 </plist>

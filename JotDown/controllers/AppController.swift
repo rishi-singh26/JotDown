@@ -13,75 +13,49 @@ class AppController: ObservableObject {
     static let shared = AppController() // Singleton instance
     
     // MARK: - Note text
-    @Published var noteText: String {
-        didSet {
-            UserDefaultsManager.saveDraft(noteText)
-        }
-    }
+    @AppStorage(AppConstants.Keys.quickPadDraft)
+    var noteText: String = ""
     
     // MARK: - Settings properties
-    @Published var launchAtLogin: Bool {
+    @AppStorage(AppConstants.Keys.launchAtLogin)
+    var launchAtLogin: Bool = false {
         didSet {
-            LaunchAtLoginManager.shared.setLaunchAtLogin(enabled: launchAtLogin) // update launch at login settings
-            UserDefaultsManager.setLaunchAtLogin(value: launchAtLogin)
+            LaunchAtLoginManager.shared.setLaunchAtLogin(enabled: launchAtLogin)
         }
     }
     
-    @Published var monospaced: Bool {
-        didSet {
-            UserDefaultsManager.setMonoSpaced(value: monospaced)
-        }
-    }
+    @AppStorage(AppConstants.Keys.monospaced)
+    var monospaced: Bool = false
     
-    @Published var fontSize: Double {
-        didSet {
-            UserDefaultsManager.setFontSize(value: fontSize)
-        }
-    }
+    @AppStorage(AppConstants.Keys.fontSize)
+    var fontSize: Double = 15.0
     
-    @Published var isWindowTranslucent: Bool {
-        didSet {
-            UserDefaultsManager.setWindowTranslucency(value: isWindowTranslucent)
-        }
-    }
+    @AppStorage(AppConstants.Keys.windowTranslucent)
+    var isWindowTranslucent: Bool = false
     
-    @Published var isPopupTranslucent: Bool {
-        didSet {
-            UserDefaultsManager.setPopupTranslucent(value: isPopupTranslucent)
-        }
-    }
+    @AppStorage(AppConstants.Keys.popupTranslucent)
+    var isPopupTranslucent: Bool = false
     
     // MARK: - Shortcut setup properties
-    @Published var isShortcutVerified: Bool {
+    @AppStorage(AppConstants.Keys.shortcutVerified)
+    var isShortcutVerified: Bool = false {
         didSet {
-            UserDefaultsManager.setShortcutVerified(value: isShortcutVerified)
+            if isShortcutVerified == false {
+                useShortcutToSave = false
+            }
         }
     }
     
-    @Published var useShortcutToSave: Bool {
-        didSet {
-            UserDefaultsManager.setUseShortcutToSave(value: useShortcutToSave)
-        }
-    }
+    @AppStorage(AppConstants.Keys.useShortcutToSave)
+    var useShortcutToSave: Bool = false
     
-    // MARK: - Notes permission setup
-    @Published var hasNotesPermission: Bool {
-        didSet {
-            UserDefaultsManager.setNotesPermission(value: hasNotesPermission)
-        }
-    }
+    // MARK: - AppleScript permission to Apple Notes setup
+    @AppStorage(AppConstants.Keys.notesPermissionStatus)
+    var hasNotesPermission: Bool = false
     
-    private init() {
-        // Initialize from UserDefaults
-        self.noteText = UserDefaultsManager.loadDraft()
-        self.launchAtLogin = UserDefaultsManager.getLaunchAtLogin()
-        self.monospaced = UserDefaultsManager.getMonoSpaced()
-        self.fontSize = UserDefaultsManager.getFontSize()
-        self.isWindowTranslucent = UserDefaultsManager.getWindowTranslucent()
-        self.isPopupTranslucent = UserDefaultsManager.getPopupTranslucent()
-        self.isShortcutVerified = UserDefaultsManager.getShortcutVerified()
-        self.useShortcutToSave = UserDefaultsManager.getUseShortcutToSave()
-        self.hasNotesPermission = UserDefaultsManager.getNotesPermission()
-    }
+    // MARK: - Auto check for updates setup
+    @AppStorage(AppConstants.Keys.autoCheckForUpdates)
+    var autoCheckForUpdates: Bool = true
+    
+    private init() {}
 }
-

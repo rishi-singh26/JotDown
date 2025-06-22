@@ -22,7 +22,7 @@ class AppleScriptManager {
         DispatchQueue.main.async {
             if withShortcut {
                 // Save with shortcut
-                let (status, error) = saveNoteWithShortcut(name: UserDefaultsManager.shortcutName, with: content, useMonoSpaced: useMonoSpaced)
+                let (status, error) = saveNoteWithShortcut(name: AppConstants.shortcutName, with: content, useMonoSpaced: useMonoSpaced)
                 // On success, complete
                 if error == nil && status {
                     completion(status, 0, error)
@@ -90,7 +90,7 @@ class AppleScriptManager {
         tell application "Notes"
             try
                 tell account "iCloud"
-                    set folderName to "\(UserDefaultsManager.appName)"
+                    set folderName to "\(AppConstants.appName)"
         
                     -- Check if folder exists
                     set folderExists to false

@@ -63,7 +63,7 @@ struct SettingsView: View {
                 }
             }
             
-            MacCustomSection(header: "\(UserDefaultsManager.appName) MenuBar Popup Settings") {
+            MacCustomSection(header: "\(AppConstants.appName) MenuBar Popup Settings") {
                 HStack {
                     Text("Toggle Menubar Popup")
                         .frame(width: 150, alignment: .leading)
@@ -83,7 +83,7 @@ struct SettingsView: View {
                         .help("Translucent Background for the popup")
                 }
             }
-            MacCustomSection(header: "\(UserDefaultsManager.appName) Window Settings") {
+            MacCustomSection(header: "\(AppConstants.appName) Window Settings") {
                 HStack {
                     Text("Toggle Window")
                         .frame(width: 150, alignment: .leading)
@@ -101,6 +101,23 @@ struct SettingsView: View {
                     Toggle("", isOn: $controller.isWindowTranslucent)
                         .toggleStyle(.switch)
                         .help("Translucent Background for the window")
+                }
+            }
+            
+            MacCustomSection(header: "Updates Management") {
+                HStack {
+                    HStack(alignment: .center) {
+                        Toggle("Check for updates automatically", isOn: $controller.autoCheckForUpdates)
+                        .toggleStyle(.checkbox)
+                        .help("Check for updates automatically")
+                    }
+                    Spacer()
+                    
+                    Button("Check now") {
+                        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+                            appDelegate.checkForUpdates(self)
+                        }
+                    }
                 }
             }
             .padding(.bottom)

@@ -8,6 +8,7 @@
 import Cocoa
 import SwiftUI
 import KeyboardShortcuts
+import Sparkle
 
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -17,8 +18,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var settingsWindowController: SettingsWindowController?
     var jotDownWindowController: NSWindowController?
     
+    var updaterController: SPUStandardUpdaterController?
+    
     func applicationDidFinishLaunching(_ notification: Notification) {
-        print("🚀 App did finish launching - AppDelegate working!")
+        updaterController = SPUStandardUpdaterController(
+            startingUpdater: true,
+            updaterDelegate: nil,
+            userDriverDelegate: nil
+        )
+
+        // print("🚀 App did finish launching - AppDelegate working!")
         
         // Hide dock icon (this is crucial for menu bar apps)
         NSApp.setActivationPolicy(.accessory)
@@ -48,45 +57,53 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
     
-    // MARK: - Popover management
+    @objc func quitApp() {
+        // print("👋 Quit app triggered")
+        NSApp.terminate(nil)
+    }
+    
+    @IBAction func checkForUpdates(_ sender: Any) {
+        updaterController?.checkForUpdates(sender)
+    }
+}
+
+// MARK: - Popover management
+extension AppDelegate {
     private func setupStatusItem() {
-        print("📍 Setting up status item...")
+        // print("📍 Setting up status item...")
         
         // Create status bar item
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         
         guard let button = statusItem.button else {
-            print("❌ Failed to create status item button")
+            // print("❌ Failed to create status item button")
             return
         }
         
-        print("✅ Status item button created")
+        // print("✅ Status item button created")
         
         // Configure button appearance
-        button.image = NSImage(systemSymbolName: "note.text", accessibilityDescription: UserDefaultsManager.appName)
+        button.image = NSImage(systemSymbolName: "note.text", accessibilityDescription: AppConstants.appName)
         button.action = #selector(togglePopover)
         button.target = self
         
         // Make sure it's visible
         statusItem.isVisible = true
         
-        print("🎯 Status item configured and visible")
-        print("📏 Button frame: \(button.frame)")
+        // print("🎯 Status item configured and visible")
+        // print("📏 Button frame: \(button.frame)")
     }
     
     private func setupPopover() {
-        print("🎨 Setting up popover...")
+        // print("🎨 Setting up popover...")
         
         // Create popover with SwiftUI content
         popover = NSPopover()
-        popover.contentSize = NSSize(width: UserDefaultsManager.width, height: UserDefaultsManager.height)
+        popover.contentSize = NSSize(width: AppConstants.width, height: AppConstants.height)
         popover.behavior = .transient
         popover.animates = true
         
         let quickPadView = QuickPadView(
-            onClose: { [weak self] in
-                self?.popover.performClose(nil)
-            },
             onQuit: { [weak self] in
                 self?.quitApp()
             },
@@ -96,30 +113,32 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         )
         
         popover.contentViewController = NSHostingController(rootView: quickPadView)
-        print("✅ Popover configured")
+        // print("✅ Popover configured")
     }
     
     @objc func togglePopover() {
-        print("🖱️ Toggle popover called")
+        // print("🖱️ Toggle popover called")
         
         guard let button = statusItem.button else {
-            print("❌ No status item button for popover")
+            // print("❌ No status item button for popover")
             return
         }
         
         if popover.isShown {
-            print("📤 Closing popover")
+            // print("📤 Closing popover")
             popover.performClose(nil)
         } else {
-            print("📥 Opening popover")
+            // print("📥 Opening popover")
             popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
             NSApp.activate(ignoringOtherApps: true)
         }
     }
-    
-    // MARK: - JotDown Window
+}
+
+// MARK: - JotDown Window
+extension AppDelegate {
     @objc func openJotDownWindow() {
-        print("📝 Opening QuickPad Window...")
+        // print("📝 Opening QuickPad Window...")
         
         if jotDownWindowController == nil {
             // Track pinned state
@@ -132,10 +151,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 
                 if isPinnedToTop {
                     window.level = .floating
-                    print("📌 Window pinned to top")
+                    // print("📌 Window pinned to top")
                 } else {
                     window.level = .normal
-                    print("📍 Window unpinned")
+                    // print("📍 Window unpinned")
                 }
             }
             
@@ -154,11 +173,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let window = NSWindow(
                 contentViewController: hostingController
             )
-            window.title = UserDefaultsManager.appName
+            window.title = AppConstants.appName
             window.styleMask = [.titled, .closable, .resizable, .fullSizeContentView]
             window.titleVisibility = .hidden
             window.titlebarAppearsTransparent = true
-            window.setContentSize(NSSize(width: UserDefaultsManager.width, height: UserDefaultsManager.height))
+            window.setContentSize(NSSize(width: AppConstants.width, height: AppConstants.height))
             window.isReleasedWhenClosed = false
             window.center()
             
@@ -214,12 +233,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func closeJotDownWindow() {
-        print("🛑 Closing QuickPad Window...")
+        // print("🛑 Closing QuickPad Window...")
         jotDownWindowController?.window?.performClose(nil)
     }
     
     @objc func jotDownWindowWillClose(_ notification: Notification) {
-        print("🛑 QuickPad Window will close - cleaning up...")
+        // print("🛑 QuickPad Window will close - cleaning up...")
         
         NotificationCenter.default.removeObserver(
             self,
@@ -234,10 +253,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         jotDownWindowController = nil
     }
-    
-    // MARK: - Settings Window
+}
+
+// MARK: - Settings Window management
+extension AppDelegate {
     @objc func openSettingsWindow() {
-        print("⚙️ Opening Settings Window...")
+        // print("⚙️ Opening Settings Window...")
         
         if settingsWindowController == nil {
             settingsWindowController = SettingsWindowController()
@@ -263,7 +284,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func settingsWindowWillClose(_ notification: Notification) {
-        print("🛑 Settings Window will close - hiding from dock...")
+        // print("🛑 Settings Window will close - hiding from dock...")
         
         // Remove observer
         NotificationCenter.default.removeObserver(
@@ -281,24 +302,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         settingsWindowController = nil
     }
     
-    @objc func quitApp() {
-        print("👋 Quit app triggered")
-        NSApp.terminate(nil)
-    }
-    
     @objc func closeSettingsWindow() {
-        print("🛑 Closing Settings Window...")
+        // print("🛑 Closing Settings Window...")
         settingsWindowController?.window?.performClose(nil)
     }
-    
-    // MARK: - Dock Visibility Management
+}
+
+// MARK: - Dock Visibility Management
+extension AppDelegate {
     private func showInDock() {
-        print("🔍 Showing app in dock...")
+        // print("🔍 Showing app in dock...")
         NSApp.setActivationPolicy(.regular)
     }
     
     private func hideFromDock() {
-        print("👻 Hiding app from dock...")
+        // print("👻 Hiding app from dock...")
         NSApp.setActivationPolicy(.accessory)
     }
     
@@ -320,7 +338,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         appMenu.addItem(NSMenuItem.separator())
         
         // Add Quit item (Command + Q)
-        let quitItem = NSMenuItem(title: "Quit \(UserDefaultsManager.appName)", action: #selector(quitApp), keyEquivalent: "q")
+        let quitItem = NSMenuItem(title: "Quit \(AppConstants.appName)", action: #selector(quitApp), keyEquivalent: "q")
         quitItem.target = self
         appMenu.addItem(quitItem)
         
@@ -352,7 +370,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         windowMenu.addItem(NSMenuItem.separator())
         
         // Custom window menu items for your app
-        let openJotDownWindowItem = NSMenuItem(title: "Open \(UserDefaultsManager.appName) Window", action: #selector(openJotDownWindow), keyEquivalent: KeyboardShortcuts.Name.toggleJotDownWindow.rawValue)
+        let openJotDownWindowItem = NSMenuItem(title: "Open \(AppConstants.appName) Window", action: #selector(openJotDownWindow), keyEquivalent: KeyboardShortcuts.Name.toggleJotDownWindow.rawValue)
         openJotDownWindowItem.target = self
         windowMenu.addItem(openJotDownWindowItem)
         

@@ -29,15 +29,14 @@ struct QuickPadView: View {
     @State private var isLoading: Bool = false
     @FocusState private var isTextFieldFocused: Bool
     
-    var onClose: () -> Void = {}
     let onQuit: () -> Void
     let openSettings: () -> Void
     var togglePin: () -> Void = {}
     var isWindow: Bool = false
     
     var textFont: Font {
-        let fontSize = UserDefaultsManager.getFontSize()
-        let useMonospaced = UserDefaultsManager.getMonoSpaced()
+        let fontSize = controller.fontSize
+        let useMonospaced = controller.monospaced
         
         if useMonospaced {
             return .system(size: fontSize, design: .monospaced)
@@ -48,9 +47,9 @@ struct QuickPadView: View {
     
     var background: Color {
         if isWindow {
-            return UserDefaultsManager.getWindowTranslucent() ? .clear : Color(NSColor.textBackgroundColor)
+            return controller.isWindowTranslucent ? .clear : Color(NSColor.textBackgroundColor)
         } else {
-            return UserDefaultsManager.getPopupTranslucent() ? .clear : Color(NSColor.textBackgroundColor)
+            return controller.isPopupTranslucent ? .clear : Color(NSColor.textBackgroundColor)
         }
     }
     
@@ -69,30 +68,15 @@ struct QuickPadView: View {
         VStack(spacing: 0) {
             // Header
             if !isWindow {
-                Group {
-                    HStack {
-                        Text(UserDefaultsManager.appName)
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            onClose()
-                        }) {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(.secondary)
-                                .font(.title2)
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        .help("Close")
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 12)
-                    .padding(.bottom, 8)
+                HStack {
+                    Spacer()
+                    Text(AppConstants.appName)
+                        .font(.headline)
+                        .fontWeight(.semibold)
                     
-                    Divider()
+                    Spacer()
                 }
+                .padding(.top, 10)
             }
             
             // Text Editor
@@ -171,7 +155,12 @@ struct QuickPadView: View {
                         sendToNotes()
                     }
                     .keyboardShortcut("s", modifiers: [.command])
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.borderless)
+                    .foregroundStyle(.white)
+                    .padding(.vertical, 5)
+                    .padding(.horizontal, 14)
+                    .background(.accent)
+                    .cornerRadius(8)
                     .disabled(isNoteEmpty || isLoading)
                     .overlay(
                         Group {
@@ -306,7 +295,7 @@ struct QuickPadView: View {
         1. Open System Settings
         2. Go to Privacy & Security
         3. Click on "Automation"
-        4. Find "\(UserDefaultsManager.appName)" in the list
+        4. Find "\(AppConstants.appName)" in the list
         5. Check the box next to "Notes"
         
         Then try saving again.

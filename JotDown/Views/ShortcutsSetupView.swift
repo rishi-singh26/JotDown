@@ -11,13 +11,15 @@ struct ShortcutsSetupView: View {
     @Environment(\.openURL) var openURL
     @ObservedObject var controller = AppController.shared
     
+    @State private var showShortcutVerificationErr = false
+    
     var body: some View {
         ScrollView {
             MacCustomSection {
                 VStack(alignment: .leading) {
                     Text("To avoid opening Apple Notes each time you send a note, complete the Shortcuts setup.")
                         .padding(.bottom, 8)
-                    Text("Monospaced font style will not be maintained when Sending to Notes with shortcut.")
+                    Text("Monospaced font style will not be preserved when sending to Notes using the shortcut.")
                     Divider()
                 }
             }
@@ -29,7 +31,7 @@ struct ShortcutsSetupView: View {
                     HStack {
                         Spacer()
                         Button {
-                            if let url = URL(string: UserDefaultsManager.shortcutURL) {
+                            if let url = URL(string: AppConstants.shortcutURL) {
                                 openURL(url)
                             }
                         } label: {
@@ -52,10 +54,12 @@ struct ShortcutsSetupView: View {
                             DispatchQueue.main.async {
                                 let shortcutValue = "JotDown shortcut verification note"
                                 let (status, error) = AppleScriptManager.saveNoteWithShortcut(
-                                    name: UserDefaultsManager.shortcutName,
+                                    name: AppConstants.shortcutName,
                                     with: shortcutValue
                                 )
-                                controller.isShortcutVerified = error == nil && status
+                                let shortcutVerificationStatus = error == nil && status
+                                controller.isShortcutVerified = shortcutVerificationStatus
+                                showShortcutVerificationErr = !shortcutVerificationStatus
                             }
                         } label: {
                             Text(controller.isShortcutVerified ? "Verify again" : "Verify")
@@ -79,6 +83,12 @@ struct ShortcutsSetupView: View {
                 .padding(.bottom)
             }
         }
+        .alert("Could not verify shortcut!", isPresented: $showShortcutVerificationErr) {
+            Button("Ok", role: .cancel) { }
+        } message: {
+            Text("Please check that the shortcut name has not been changed.")
+        }
+
     }
 }
 
