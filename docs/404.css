@@ -325,6 +325,10 @@ footer {
         }
     }
 
+    .copyright-text {
+        text-align: center;
+    }
+
     .footer-trailing {
         display: flex;
         flex-direction: row;
@@ -365,6 +369,12 @@ footer {
     }
 }
 
+@media (max-width: 850px) {
+    footer {
+        flex-direction: column;
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 200px 20px;
@@ -389,10 +399,6 @@ footer {
         .hero-title {
             font-size: 60px;
         }
-    }
-
-    footer {
-        flex-direction: column;
     }
 }
 
