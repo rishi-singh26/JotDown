@@ -4,6 +4,9 @@
     --header-shadow: #9a341226;
     --text-underline: #fdabb4;
     --semi-dark-background: #4314070d;
+    --version-text: #43140799;
+    --version-background: #43140708;
+    --version-border: #43140726;
 }
 
 /* Please keep this css code to improve the font quality */
@@ -147,6 +150,17 @@ body {
             font-size: 25px;
             color: var(--text-dark);
         }
+
+        .header-version {
+            /* fontsize: 0.75rem fontweight 700 borderwidth 1.5px */
+            font-size: 0.75rem;
+            border: 1.5px solid var(--version-border);
+            background-color: var(--version-background);
+            color: var(--version-text);
+            border-radius: 0.5rem;
+            padding: 1px 0.25rem;
+            margin-top: 0px;
+        }
     }
 
     .header-trailing {
@@ -248,6 +262,7 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    height: 25px;
 
     .button-icon {
         transition: transform 0.3s ease;
@@ -268,7 +283,7 @@ body {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    height: 55px;
+    height: 25px;
 
     .button-left-icon {
         width: 25px;
@@ -338,8 +353,8 @@ body {
     font-size: 18px;
     border-radius: 1rem;
     transition: background-color 0.4s ease;
-    box-shadow: var(#000, 0 0 #0000), var(#000, 0 0 #0000), #43140740;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .semidark-btn:focus,
@@ -355,7 +370,6 @@ body {
     font-size: 18px;
     border-radius: 1rem;
     transition: background-color 0.4s ease;
-    /* box-shadow: 0 10px 15px #43140740; */
     box-shadow: 0 30px 35px -1px #43140740;
 }
 
