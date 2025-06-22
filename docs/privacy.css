@@ -170,6 +170,10 @@ body {
     }
 }
 
+.header.scrolled {
+    box-shadow: 0 25px 50px -12px var(--header-shadow);
+}
+
 .container {
     padding: 300px;
     color: var(--text);
