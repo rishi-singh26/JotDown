@@ -186,6 +186,18 @@ body {
     /* 16:9 aspect ratio */
     object-fit: contain;
     /* Ensure the image is contained within its box */
+    transition: content 0.9s ease;
+    /* Smooth transition on hover */
+}
+
+.popup-image:hover {
+    content: url('./assets/Popup.Translucent.png');
+    /* Change the image source on hover */
+}
+
+.window-image:hover {
+    content: url('./assets/Window.Translucent.png');
+    /* Change the image source on hover */
 }
 
 .page-text {
