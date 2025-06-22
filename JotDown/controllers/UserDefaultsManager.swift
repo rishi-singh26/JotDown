@@ -11,6 +11,8 @@ class UserDefaultsManager {
     static let width = 600
     static let height = 450
     static let appName = "JotDown"
+    static let shortcutName = "JotDown Send to Notes"
+    static let shortcutURL = "https://www.icloud.com/shortcuts/d31dafba93f742e68c9ff15c18bc70bc"
     
     static private let defaults = UserDefaults.standard
     
@@ -21,6 +23,9 @@ class UserDefaultsManager {
         static let fontSize = "fontSize"
         static let windowTranslucent = "windowTranslucent"
         static let popupTranslucent = "popupTranslucent"
+        static let shortcutVerified = "shortcutVerified"
+        static let useShortcutToSave = "useShortcutToSave"
+        static let notesPermissionStatus = "notesPermissionStatus"
     }
     
     private init() {}
@@ -82,5 +87,32 @@ class UserDefaultsManager {
     
     static func setPopupTranslucent(value: Bool) {
         defaults.set(value, forKey: Keys.popupTranslucent)
+    }
+    
+    // MARK: - Shortcut Verification
+    static func getShortcutVerified() -> Bool {
+        defaults.bool(forKey: Keys.shortcutVerified)
+    }
+    
+    static func setShortcutVerified(value: Bool) {
+        defaults.set(value, forKey: Keys.shortcutVerified)
+    }
+    
+    // MARK: - Use Shortcut to save
+    static func getUseShortcutToSave() -> Bool {
+        defaults.bool(forKey: Keys.useShortcutToSave)
+    }
+    
+    static func setUseShortcutToSave(value: Bool) {
+        defaults.set(value, forKey: Keys.useShortcutToSave)
+    }
+    
+    // MARK: - Notes permission status
+    static func getNotesPermission() -> Bool {
+        defaults.bool(forKey: Keys.notesPermissionStatus)
+    }
+        
+    static func setNotesPermission(value: Bool) {
+        defaults.set(value, forKey: Keys.notesPermissionStatus)
     }
 }

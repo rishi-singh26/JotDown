@@ -11,9 +11,81 @@ import Cocoa
 class AppleScriptManager {
 
     private init() {}
-
+    
+    // MARK: - Save Note Flow
+    /// Status Codes
+    /// 0 => Success
+    /// 1 => Save with apple script ERROR
+    /// 2 => Shortcut permission ERROR and ERROR with apple script error
+    /// 3 => Shortcut permission ERROR and SUCCESS with apple script
+    static func saveNote(title: String, content: String, withShortcut: Bool, useMonoSpaced: Bool = false, completion: @escaping (Bool, Int, String?) -> Void) {
+        DispatchQueue.main.async {
+            if withShortcut {
+                // Save with shortcut
+                let (status, error) = saveNoteWithShortcut(name: UserDefaultsManager.shortcutName, with: content, useMonoSpaced: useMonoSpaced)
+                // On success, complete
+                if error == nil && status {
+                    completion(status, 0, error)
+                } else {
+                    // On error (Shortcut does not exist or any other), try with AppleScript
+                    let (status, error) = saveNoteWithAppleScript(title: title, content: content, useMonoSpaced: useMonoSpaced)
+                    completion(status, status ? 3 : 2, error)
+                }
+            } else {
+                // Save with AppleScript
+                let (status, error) = saveNoteWithAppleScript(title: title, content: content, useMonoSpaced: useMonoSpaced)
+                completion(status, status ? 0 : 1, error)
+            }
+        }
+    }
+    
+    
+    // MARK: - Run Shortcut with input
+    /// Save note to Apple notes application with a shortcut
+    /// It will try to run the shortcut with the shortcut name provided in the parameter with the note provided in the parameter
+    static func saveNoteWithShortcut(name: String, with value: String, useMonoSpaced: Bool = false) -> (Bool, String?) { // status, error
+        let script = """
+        set myText to "\(value)"
+        set shortcutName to "\(name)"
+        set shortcutExists to false
+        
+        try
+            tell application "Shortcuts Events"
+                run shortcut shortcutName with input myText
+            end tell
+            set shortcutExists to true
+        on error
+            set shortcutExists to false
+        end try
+        
+        if shortcutExists then
+            return "Success"
+        else
+            return "Error"
+        end if
+        """
+        
+        var error: NSDictionary?
+        if let appleScript = NSAppleScript(source: script) {
+            let response = appleScript.executeAndReturnError(&error)
+            if let error = error {
+                // print("AppleScript Error: \(error)")
+                return (false, "AppleScript Error: \(error)")
+            }
+            if response.stringValue == "Error" {
+                // print("AppleScript Error")
+                return (false, "AppleScript Error")
+            }
+            return (true, nil)
+        }
+        // print("⚠️ Unknown AppleScript failure during save")
+        return (false, "Unknown error")
+    }
+    
+    
+    // MARK: - Save to Apple Notes with AppleScript
     /// Save or update note content with QuickPad ID
-    static func saveNote(title: String, content: String, useMonoSpaced: Bool = false) -> (Bool, String?) { // status, error
+    static func saveNoteWithAppleScript(title: String, content: String, useMonoSpaced: Bool = false) -> (Bool, String?) { // status, error
         let script = """
         tell application "Notes"
             try
@@ -41,7 +113,7 @@ class AppleScriptManager {
                     make new note at targetFolder with properties {name:noteName, body:noteBody}
                 end tell
             on error errMsg
-                display dialog "AppleScript Error: " & errMsg
+                display dialog "JotDown Error: " & errMsg
             end try
         end tell
         """
@@ -50,15 +122,17 @@ class AppleScriptManager {
         if let appleScript = NSAppleScript(source: script) {
             let _ = appleScript.executeAndReturnError(&error)
             if let error = error {
-                print("AppleScript Error: \(error)")
+                // print("AppleScript Error: \(error)")
                 return (false, "AppleScript Error: \(error)")
             }
             return (true, nil)
         }
-        print("⚠️ Unknown AppleScript failure during save")
+        // print("⚠️ Unknown AppleScript failure during save")
         return (false, "Unknown error")
     }
     
+    
+    // MARK: - Request AppleScript permission
     static func requestNotesPermission(completion: @escaping (Bool) -> Void) {
         DispatchQueue.global(qos: .userInitiated).async {
             // Simple permission request script
@@ -83,7 +157,8 @@ class AppleScriptManager {
             }
         }
     }
-
+    
+    
     /// Escape AppleScript string
     static private func escape(_ string: String) -> String {
         return string
@@ -94,6 +169,7 @@ class AppleScriptManager {
 
     }
     
+    
     static private func convertToNotesHTML(_ text: String, useMonoSpaced: Bool) -> String {
         let paragraphs = text.components(separatedBy: .newlines)
         let htmlParagraphs = paragraphs.map { line -> String in
@@ -103,7 +179,7 @@ class AppleScriptManager {
                 .replacingOccurrences(of: "\r", with: "")
                 .replacingOccurrences(of: "\t", with: "&nbsp;&nbsp;&nbsp;&nbsp;")
                 .replacingOccurrences(of: "\n", with: "")
-            return useMonoSpaced ? "<code>\(escapedLine)</code>" : "<p>\(escapedLine)</p>"
+            return useMonoSpaced ? "<p><code>\(escapedLine)</code></p>" : "<p>\(escapedLine)</p>"
         }
         return htmlParagraphs.joined()
     }

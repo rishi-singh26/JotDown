@@ -36,6 +36,7 @@ class SettingsTabViewController: NSTabViewController {
         tabStyle = .toolbar
         
         addSettingsTab()
+        addShortcutsTab()
         addAboutTab()
     }
     
@@ -47,6 +48,15 @@ class SettingsTabViewController: NSTabViewController {
         settingsTab.label = "Settings"
         settingsTab.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Settings")
         addTabViewItem(settingsTab)
+    }
+    
+    private func addShortcutsTab() {
+        let shortcutsSetupVC = NSHostingController(rootView: ShortcutsSetupView())
+        shortcutsSetupVC.title = "Shortcuts Setup"
+        let shortcutsSetupTab = NSTabViewItem(viewController: shortcutsSetupVC)
+        shortcutsSetupTab.label = "Shortcuts"
+        shortcutsSetupTab.image = NSImage(named: "ShortcutsIcon")
+        addTabViewItem(shortcutsSetupTab)
     }
     
     private func addAboutTab() {

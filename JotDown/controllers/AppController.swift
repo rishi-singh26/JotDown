@@ -51,6 +51,26 @@ class AppController: ObservableObject {
         }
     }
     
+    // MARK: - Shortcut setup properties
+    @Published var isShortcutVerified: Bool {
+        didSet {
+            UserDefaultsManager.setShortcutVerified(value: isShortcutVerified)
+        }
+    }
+    
+    @Published var useShortcutToSave: Bool {
+        didSet {
+            UserDefaultsManager.setUseShortcutToSave(value: useShortcutToSave)
+        }
+    }
+    
+    // MARK: - Notes permission setup
+    @Published var hasNotesPermission: Bool {
+        didSet {
+            UserDefaultsManager.setNotesPermission(value: hasNotesPermission)
+        }
+    }
+    
     private init() {
         // Initialize from UserDefaults
         self.noteText = UserDefaultsManager.loadDraft()
@@ -59,6 +79,9 @@ class AppController: ObservableObject {
         self.fontSize = UserDefaultsManager.getFontSize()
         self.isWindowTranslucent = UserDefaultsManager.getWindowTranslucent()
         self.isPopupTranslucent = UserDefaultsManager.getPopupTranslucent()
+        self.isShortcutVerified = UserDefaultsManager.getShortcutVerified()
+        self.useShortcutToSave = UserDefaultsManager.getUseShortcutToSave()
+        self.hasNotesPermission = UserDefaultsManager.getNotesPermission()
     }
 }
 

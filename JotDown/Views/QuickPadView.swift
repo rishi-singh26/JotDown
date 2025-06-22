@@ -136,43 +136,39 @@ struct QuickPadView: View {
                 
                 HStack(spacing: 12) {
                     if !isWindow {
-                        Button("Quit  ⌘Q") {
-                            onQuit()
+                        Group {
+                            Button("Quit  ⌘ Q") {
+                                onQuit()
+                            }
+                            .buttonStyle(.borderless)
+                            
+                            Divider()
+                                .frame(height: 15)
                         }
-                        .buttonStyle(.bordered)
                     }
                     
-                    Button("Preferences  ⌘,") {
+                    Button("Preferences  ⌘ ,") {
                         openSettings()
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.borderless)
                     
                     if isWindow {
-                        Button("Pin/Unpin  ⌘P") {
-                            togglePin()
+                        Group {
+                            Divider()
+                                .frame(height: 15)
+                            
+                            Button("Pin/Unpin  ⌘ P") {
+                                togglePin()
+                            }
+                            .keyboardShortcut("p", modifiers: [.command])
+                            .buttonStyle(.borderless)
                         }
-                        .keyboardShortcut("p", modifiers: [.command])
-                        .buttonStyle(.bordered)
                     }
                     
                     Spacer()
                     
-                    Button("Clear  ⌘K") {
-                        clearText()
-                    }
-                    .keyboardShortcut("k", modifiers: [.command])
-                    .buttonStyle(.bordered)
-                    .disabled(isNoteEmpty)
-                    
-                    Button("Copy  ⌘⇧C") {
-                        copyToClipboard()
-                    }
-                    .keyboardShortcut("c", modifiers: [.command, .shift])
-                    .buttonStyle(.bordered)
-                    .disabled(isNoteEmpty)
-                    
-                    Button("Send to Notes  ⌘S") {
-                        saveToNotes()
+                    Button("Send to Notes  ⌘ S") {
+                        sendToNotes()
                     }
                     .keyboardShortcut("s", modifiers: [.command])
                     .buttonStyle(.borderedProminent)
@@ -233,7 +229,7 @@ struct QuickPadView: View {
         }
     }
     
-    private func saveToNotes() {
+    private func sendToNotes() {
         let content = controller.noteText.trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard !content.isEmpty else {
@@ -242,50 +238,62 @@ struct QuickPadView: View {
             return
         }
         
+        // First, request permission by running a simple AppleScript
+        if controller.hasNotesPermission {
+            saveNote(content: content)
+        } else {
+            requestPermissionAndSaveNote(content: content)
+        }
+    }
+    
+    private func requestPermissionAndSaveNote(content: String) {
         isLoading = true
         statusMessage = .requestingPermission
         messageColor = .blue
         
-        // First, request permission by running a simple AppleScript
         AppleScriptManager.requestNotesPermission { [self] success in
-//            guard let self = self else { return }
-            
-            DispatchQueue.main.async {
-                if success {
-                    self.statusMessage = .saving
-                    let (status, error) = AppleScriptManager.saveNote(title: "", content: content, useMonoSpaced: controller.monospaced)
-                    
-                    self.isLoading = false
-                    
-                    if status == true {
-                        self.statusMessage = .savedToNotes
-                        self.messageColor = .green
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            controller.noteText = ""
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                                self.statusMessage = .readyToWrite
-                                self.messageColor = .secondary
-                            }
-                        }
-                        
-                    } else {
-                        self.statusMessage = .saveFailed
-                        self.messageColor = .red
-                        print("AppleScript Error: \(error!)")
-                    }
-                } else {
-                    self.isLoading = false
-                    self.statusMessage = .permissionDenied
-                    self.messageColor = .red
-                    
-                    // Show instructions for manual permission setup
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                        self.showPermissionInstructions()
-                    }
+            self.isLoading = false
+            if success {
+                DispatchQueue.main.async {
+                    controller.hasNotesPermission = true
+                }
+                self.saveNote(content: content)
+            } else {
+                self.statusMessage = .permissionDenied
+                self.messageColor = .red
+                
+                // Show instructions for manual permission setup
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    self.showPermissionInstructions()
                 }
             }
+        }
+    }
+    
+    private func saveNote(content: String) {
+        self.statusMessage = .saving
+        AppleScriptManager.saveNote(title: "", content: content, withShortcut: controller.useShortcutToSave, useMonoSpaced: controller.monospaced) { status, statusCode, error in
+            
+            if status == true && error == nil {
+                self.statusMessage = .savedToNotes
+                self.messageColor = .green
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    controller.noteText = ""
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        self.statusMessage = .readyToWrite
+                        self.messageColor = .secondary
+                    }
+                }
+            } else {
+                self.statusMessage = .saveFailed
+                self.messageColor = .red
+                print("AppleScript Error: \(error!)")
+            }
+            
+            // Handle status code
+            self.handleStatusCode(statusCode)
         }
     }
     
@@ -317,6 +325,28 @@ struct QuickPadView: View {
         
         statusMessage = .readyToWrite
         messageColor = .secondary
+    }
+    
+    private func handleStatusCode(_ code: Int) {
+        switch code {
+        case 0:
+            print("Permission Denied")
+            break
+        case 1:
+            print("Error while saving through AppleScript")
+            break
+        case 2:
+            print("Error while saving through Shortcut and ERROR with AppleScript")
+            break
+        case 3:
+            print("Error while saving through Shortcut and SUCCESS with AppleScript")
+            break
+        case 4:
+            print("Success")
+            break
+        default:
+            break
+        }
     }
     
     private func clearText() {
