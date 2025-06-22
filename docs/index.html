@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; style-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' ; frame-src 'self' https://docs.google.com/; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://cdn.jsdelivr.net">
+        content="default-src 'self'; style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' https://cdn.jsdelivr.net; frame-src 'self' https://docs.google.com/; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://cdn.jsdelivr.net">
     <title>JotDown MacOS - Apple Notes in menu bar</title>
     <link rel="canonical" key="canonical" href="https://jotdown.rishisingh.in/" />
     <meta content="Menubar extension for for Apple Notes" name="description" />
@@ -23,12 +23,12 @@
         type="image/x-icon" type="image/png" />
     <link href="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/Logo.png" rel="apple-touch-icon" />
 
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/styles.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <script src="./header-shadow.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/header-shadow.js" defer></script>
 </head>
 
 <body>
@@ -36,18 +36,24 @@
         <!-- Header -->
         <div class="header">
             <div class="header-leading">
-                <img src="./assets/Logo.png" alt="JotDown Icon" class="header-icon">
+                <img src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/Logo.png" alt="JotDown Icon"
+                    class="header-icon">
                 <h1 class="header-title inter-700">JotDown</h1>
             </div>
             <div class="header-trailing">
-                <a class="light-btn hover-btn-style inter-700" href="mailto:raisin.winsome-0a@icloud.com">
-                    <img class="button-icon" src="./assets/icons/text.bubble.fill.svg" alt="">
+                <a class="light-btn hover-btn-style inter-700" href="mailto:email@rishisingh.in">
+                    <img class="button-icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/text.bubble.fill.svg"
+                        alt="">
                     <span>Contact</span>
                 </a>
                 <button class="semidark-btn shift-btn-style inter-700 header-download-btn">
-                    <img class="button-left-icon" src="./assets/icons/apple.logo.svg" alt="">
+                    <img class="button-left-icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/apple.logo.svg" alt="">
                     <span class="button-text">Download for Mac</span>
-                    <img class="button-right-icon" src="./assets/icons/arrow.right.svg" alt="">
+                    <img class="button-right-icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/arrow.right.svg"
+                        alt="">
                 </button>
             </div>
         </div>
@@ -61,28 +67,36 @@
                 </span>
                 <span class="btn-container">
                     <button class="dark-btn shift-btn-style inter-700">
-                        <img class="button-left-icon" src="./assets/icons/apple.logo.light.svg" alt="">
+                        <img class="button-left-icon"
+                            src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/apple.logo.light.svg"
+                            alt="">
                         <span class="button-text">Download for Mac</span>
-                        <img class="button-right-icon" src="./assets/icons/arrow.right.light.svg" alt="">
+                        <img class="button-right-icon"
+                            src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/arrow.right.light.svg"
+                            alt="">
                     </button>
                     <p class="mac-version inter-700">MacOS 14.0+</p>
                 </span>
             </div>
 
-            <img class="image-size" src="./assets/Popup.png"
+            <img class="image-size" src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/Popup.png"
                 alt="Screenshot of the JotDown application open from the menubar">
-            <img class="image-size" src="./assets/Window.png" alt="Screenshot of the JotDown application window">
-            <img class="image-size" src="./assets/Settings.png"
+            <img class="image-size" src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/Window.png"
+                alt="Screenshot of the JotDown application window">
+            <img class="image-size" src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/Settings.png"
                 alt="Screenshot of the JotDown application settings window">
 
             <span>
-                <h2 class="page-text inter-500">Write into your favourite note-taking app from the menubar. Capture your thoughts
+                <h2 class="page-text inter-500">Write into your favourite note-taking app from the menubar. Capture your
+                    thoughts
                     and when you are ready,
                     send it to Apple Notes.</h2>
-                <h2 class="page-text inter-500">The app is present in the menu bar. You can access it by clicking the menubar icon
+                <h2 class="page-text inter-500">The app is present in the menu bar. You can access it by clicking the
+                    menubar icon
                     or with a keyboard
                     shortcut of your choice. <span class="shortcut-view inter-700">⌘⇧J</span>by default.</h2>
-                <h2 class="page-text inter-500">JotDown can also be used as a window which can be opened by clicking on the window
+                <h2 class="page-text inter-500">JotDown can also be used as a window which can be opened by clicking on
+                    the window
                     button in the popup or
                     by a keyboard shortcut that can be configured in the settings. <span
                         class="shortcut-view inter-700">⌘⌥J</span> by default. The window can also be
@@ -91,57 +105,81 @@
 
             <ul class="features-container">
                 <li class="feature-item">
-                    <img class="feature-item__icon" src="./assets/icons/keyboard.svg" alt="Keyboard shortcuts icon">
+                    <img class="feature-item__icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/keyboard.svg"
+                        alt="Keyboard shortcuts icon">
                     <p class="feature-item__title no-margin inter-700">Custom hotkeys</p>
                 </li>
                 <li class="feature-item">
-                    <img class="feature-item__icon" src="./assets/icons/text.and.command.macwindow.svg"
+                    <img class="feature-item__icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/text.and.command.macwindow.svg"
                         alt="Clean Interface icon">
                     <p class="feature-item__title no-margin inter-700">Clean Interface</p>
                 </li>
                 <li class="feature-item">
-                    <img class="feature-item__icon" src="./assets/icons/bolt.fill.svg" alt="Lightning fast icon">
+                    <img class="feature-item__icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/bolt.fill.svg"
+                        alt="Lightning fast icon">
                     <p class="feature-item__title no-margin inter-700">Lightning fast</p>
                 </li>
                 <li class="feature-item">
-                    <img class="feature-item__icon" src="./assets/icons/numbers.rectangle.svg" alt="Word count icon">
+                    <img class="feature-item__icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/numbers.rectangle.svg"
+                        alt="Word count icon">
                     <p class="feature-item__title no-margin inter-700">Word count</p>
                 </li>
                 <li class="feature-item">
-                    <img class="feature-item__icon" src="./assets/icons/character.cursor.ibeam.svg"
+                    <img class="feature-item__icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/character.cursor.ibeam.svg"
                         alt="Font settings icon">
                     <p class="feature-item__title no-margin inter-700">Font settings</p>
                 </li>
                 <li class="feature-item">
-                    <img class="feature-item__icon" src="./assets/icons/shortcuts.svg" alt="Shortcuts integration icon">
+                    <img class="feature-item__icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/shortcuts.svg"
+                        alt="Shortcuts integration icon">
                     <p class="feature-item__title no-margin inter-700">Shortcuts integration</p>
                 </li>
                 <li class="feature-item">
-                    <img class="feature-item__icon" src="./assets/icons/macwindow.on.rectangle.svg"
+                    <img class="feature-item__icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/macwindow.on.rectangle.svg"
                         alt="Floating window icon">
                     <p class="feature-item__title no-margin inter-700">Floating window</p>
                 </li>
                 <li class="feature-item">
-                    <img class="feature-item__icon" src="./assets/icons/signpost.right.svg" alt="Launch at Login icon">
+                    <img class="feature-item__icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/signpost.right.svg"
+                        alt="Launch at Login icon">
                     <p class="feature-item__title no-margin inter-700">Launch at Login</p>
                 </li>
             </ul>
 
             <span class="btn-container">
                 <button class="dark-btn shift-btn-style inter-700">
-                    <img class="button-left-icon" src="./assets/icons/apple.logo.light.svg" alt="">
+                    <img class="button-left-icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/apple.logo.light.svg"
+                        alt="">
                     <span class="button-text">Download for Mac</span>
-                    <img class="button-right-icon" src="./assets/icons/arrow.right.light.svg" alt="">
+                    <img class="button-right-icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/arrow.right.light.svg"
+                        alt="">
                 </button>
             </span>
 
-            <h2 class="page-text inter-500">By default, when you send a note to Apple Notes, the Apple Notes application will
+            <h2 class="page-text inter-500">By default, when you send a note to Apple Notes, the Apple Notes application
+                will
                 launch in background.
-                To avoid that, follow through the shortcuts setup below.<br>The shortcuts setup will send note to Apple Notes
+                To avoid that, follow through the shortcuts setup below.<br>The shortcuts setup will send note to Apple
+                Notes
                 without launching the application.</h2>
 
             <div class="shortcuts-setup-container">
-                <h2 class="inter-700">Shortcuts Setup</h2>
+                <div class="shortcuts-setup-header">
+                    <img class="icon"
+                        src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/icons/shortcuts.svg"
+                        alt="Shortcuts integration icon">
+                    <h2 class="inter-700">Shortcuts Setup</h2>
+                </div>
                 <ul>
                     <li>
                         <h3 class="inter-600">Go to JotDown Settings <span class="shortcut-view inter-700">⌘,</span>
@@ -166,12 +204,14 @@
     </main>
     <footer>
         <div class="footer-leading">
-            <img src="./assets/Logo.png" alt="JotDown Icon" class="footer-icon">
+            <img src="https://cdn.jsdelivr.net/gh/rishi-singh26/JotDown/docs/assets/Logo.png" alt="JotDown Icon"
+                class="footer-icon">
             <h1 class="footer-title inter-700">JotDown</h1>
         </div>
+        <p class="inter-300">Copyright © 2025 JotDown. All Rights Reserved</p>
         <div class="footer-trailing">
-            <a class="inter-400 footer-trailing-link" href="./privacy/privacy.html">Privacy Policy</a>
-            <a class="inter-400 footer-trailing-link" href="mailto:raisin.winsome-0a@icloud.com">Contact us</a>
+            <a class="inter-400 footer-trailing-link" href="./pages/privacy-policy.html">Privacy Policy</a>
+            <a class="inter-400 footer-trailing-link" href="mailto:email@rishisingh.in">Contact us</a>
         </div>
     </footer>
 </body>
