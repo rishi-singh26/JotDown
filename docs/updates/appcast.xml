@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+    xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"
+    xmlns:dc="http://purl.org/dc/elements/1.1/">
+
+    <channel>
+        <title>JotDown Updates</title>
+        <link>https://jotdown.rishisingh.in/updates/appcast.xml</link>
+        <description>Latest updates for JotDown</description>
+        <language>en</language>
+
+        <item>
+            <title>Version 1.0.0</title>
+            <sparkle:releaseNotesLink>https://jotdown.rishisingh.in/updates/release-notes/1.0.0.html</sparkle:releaseNotesLink>
+            <pubDate>Mon, 23 Jun 2025 10:00:00 +0000</pubDate>
+            <enclosure
+                url="https://jotdown.rishisingh.in/updates/JotDown-1.0.0.zip"
+                sparkle:version="1"
+                sparkle:shortVersionString="1.0.0"
+                sparkle:edSignature="xMgb5Q4wBXpJt6kz5GyqwofpcYY61s/B7eBvwAPkSarMx0TpQ/V2JE8P0s6efcmdaMOwdBxCKN7zmEswoVqrDw=="
+                length="2383008"
+                type="application/octet-stream"/>
+        </item>
+    </channel>
+</rss>
