@@ -160,6 +160,7 @@ body {
             border-radius: 0.5rem;
             padding: 1px 0.25rem;
             margin-top: 0px;
+            width: max-content;
         }
     }
 
@@ -371,6 +372,7 @@ body {
     border-radius: 1rem;
     transition: background-color 0.4s ease;
     box-shadow: 0 30px 35px -1px #43140740;
+    text-decoration: none;
 }
 
 .dark-btn:focus,

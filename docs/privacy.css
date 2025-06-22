@@ -161,6 +161,7 @@ body {
             border-radius: 0.5rem;
             padding: 1px 0.25rem;
             margin-top: 0px;
+            width: max-content;
         }
     }
 
