@@ -396,6 +396,8 @@ footer {
     }
 
     .header {
+        padding: 0px 20px;
+
         .header-leading {
             .header-title {
                 font-size: 20px;
@@ -428,6 +430,10 @@ footer {
         }
     }
 
+    .header {
+        padding: 0px 15px;
+    }
+
     .features-container {
         grid-template-columns: repeat(2, 1fr);
         grid-template-rows: repeat(4, auto);
@@ -451,6 +457,10 @@ footer {
         .hero-title {
             font-size: 50px;
         }
+    }
+
+    .header {
+        padding: 0px 10px;
     }
 
     .features-container {

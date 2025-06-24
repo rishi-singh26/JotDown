@@ -570,6 +570,8 @@ footer {
     }
 
     .header {
+        padding: 0px 20px;
+
         .header-leading {
             .header-title {
                 font-size: 20px;
@@ -600,6 +602,10 @@ footer {
 @media (max-width: 600px) {
     .container {
         padding: 200px 10px;
+    }
+
+    .header {
+        padding: 0px 15px;
     }
 
     .hero {
@@ -643,6 +649,10 @@ footer {
                 text-decoration-thickness: 7px;
             }
         }
+    }
+
+    .header {
+        padding: 0px 10px;
     }
 
     .features-container {
