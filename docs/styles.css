@@ -205,6 +205,20 @@ body {
     /* Smooth transition on hover */
 }
 
+.video-container {
+    width: 100%;
+    /* Make the image responsive */
+    max-width: 100%;
+    /* Prevent it from overflowing */
+    aspect-ratio: 10.6 / 6.83;
+    /* 16:9 aspect ratio */
+    object-fit: cover;
+    /* Ensure the image is contained within its box */
+    transition: content 0.9s ease;
+    /* Smooth transition on hover */
+    border-radius: 15px;
+}
+
 .popup-image:hover {
     content: url('./assets/Popup.Translucent.png');
     /* Change the image source on hover */
