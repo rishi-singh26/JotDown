@@ -21,5 +21,17 @@
                 length="2383008"
                 type="application/octet-stream"/>
         </item>
+        <item>
+            <title>Version 1.0.1</title>
+            <sparkle:releaseNotesLink>https://jotdown.rishisingh.in/updates/release-notes/1.0.1.html</sparkle:releaseNotesLink>
+            <pubDate>Fri, 05 Sep 2025 16:00:00 +0000</pubDate>
+            <enclosure
+                url="https://jotdown.rishisingh.in/updates/JotDown-1.0.1.zip"
+                sparkle:version="2"
+                sparkle:shortVersionString="1.0.1"
+                sparkle:edSignature="jLsUMv24S0ecTWSeKZRYb5pcUsRfaQfrqDw2h8UlGfNWpk3mpR1e0zUTGTXB8C80wMo9179qjMyA00JymZaLAA=="
+                length="4229481"
+                type="application/octet-stream"/>
+        </item>
     </channel>
 </rss>

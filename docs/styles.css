@@ -98,7 +98,7 @@
 }
 
 body {
-    margin: 0px;
+    margin: 0;
     background-color: var(--background);
 }
 
@@ -115,7 +115,6 @@ body {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    height: min-content;
     margin: 0;
     padding: 20px 40px;
     height: 70px;
@@ -159,7 +158,7 @@ body {
             color: var(--version-text);
             border-radius: 0.5rem;
             padding: 1px 0.25rem;
-            margin-top: 0px;
+            margin-top: 0;
             width: max-content;
         }
     }
@@ -219,16 +218,6 @@ body {
     border-radius: 15px;
 }
 
-.popup-image:hover {
-    content: url('./assets/Popup.Translucent.png');
-    /* Change the image source on hover */
-}
-
-.window-image:hover {
-    content: url('./assets/Window.Translucent.png');
-    /* Change the image source on hover */
-}
-
 .page-text {
     letter-spacing: 0.4px;
     line-height: 40px;
@@ -239,14 +228,14 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 40px 20px 20px 20xp;
+    padding: 40px 20px 20px 20px;
     gap: 50px;
 
     .hero-title {
         font-size: 90px;
         justify-self: center;
-        margin-top: 0px;
-        margin-bottom: 0px;
+        margin-top: 0;
+        margin-bottom: 0;
         color: var(--text-dark);
         text-align: center;
 
@@ -313,7 +302,7 @@ body {
     }
 
     .button-right-icon {
-        width: 0px;
+        width: 0;
         transform: translateX(100%);
         opacity: 0;
         display: inline-block;
@@ -327,7 +316,7 @@ body {
     .button-left-icon {
         transform: translateX(-100%);
         opacity: 0;
-        width: 0px;
+        width: 0;
     }
 
     .button-text {
@@ -398,7 +387,7 @@ body {
     background-color: var(--semi-dark-background);
     border-radius: 0.5rem;
     padding: 1px 10px;
-    margin: 0px 4px;
+    margin: 0 4px;
 }
 
 .features-container {
@@ -406,7 +395,7 @@ body {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(2, auto);
     gap: 16px;
-    padding: 0px;
+    padding: 0;
 
     .feature-item {
         display: flex;
@@ -570,7 +559,7 @@ footer {
     }
 
     .header {
-        padding: 0px 20px;
+        padding: 0 20px;
 
         .header-leading {
             .header-title {
@@ -584,6 +573,10 @@ footer {
                 display: none;
             }
         }
+    }
+
+    .page-text {
+        font-size: 16px;
     }
 
     .hero {
@@ -605,7 +598,7 @@ footer {
     }
 
     .header {
-        padding: 0px 15px;
+        padding: 0 15px;
     }
 
     .hero {
@@ -652,7 +645,7 @@ footer {
     }
 
     .header {
-        padding: 0px 10px;
+        padding: 0 10px;
     }
 
     .features-container {
@@ -662,13 +655,13 @@ footer {
 }
 
 .no-margin {
-    margin: 0px;
+    margin: 0;
 }
 
 .no-bottom-margin {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .no-top-margin {
-    margin-top: 0px;
+    margin-top: 0;
 }
